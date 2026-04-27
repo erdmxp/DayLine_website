@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <div class="bg-[url('/image/morning_main.png')] bg-cover bg-center h-screen">
+    <div class="bg-cover bg-center h-screen" style="background-image: url('../image/morning_main.png')">
 
 
         <header class="pt-5">
@@ -20,35 +20,29 @@
 
         <div class="flex justify-center items-center gap-8 pt-40 px-4">
     
-    <!-- Карточка 1: Список дел -->
-    <!-- Добавили иконку, затемнили фон для читаемости -->
-    <button class="w-64 h-48 flex flex-col items-center justify-center gap-3 
+    <a href="todolist.html" class="w-64 h-48 flex flex-col items-center justify-center gap-3 
                    bg-black/30 backdrop-blur-md border border-white/20 rounded-2xl 
                    text-white hover:bg-black/50 hover:scale-105 transition-all duration-300 shadow-lg">
         <span class="text-4xl">📝</span>
         <span class="text-lg font-bold tracking-wide">Список дел</span>
         <span class="text-xs text-white/60">5 задач на сегодня</span>
-    </button>
+    </a>
 
-    <!-- Карточка 2: Финансы -->
-    <!-- Акцент на розовый, но текст читаемый -->
-    <button class="w-64 h-48 flex flex-col items-center justify-center gap-3 
+    <a href="finance.html" class="w-64 h-48 flex flex-col items-center justify-center gap-3 
                    bg-pink-900/30 backdrop-blur-md border border-pink-400/30 rounded-2xl 
                    text-white hover:bg-pink-900/50 hover:scale-105 transition-all duration-300 shadow-lg">
         <span class="text-4xl">💳</span>
         <span class="text-lg font-bold tracking-wide">Финансы</span>
         <span class="text-xs text-pink-200/80">Баланс: $1,200</span>
-    </button>
+    </a>
 
-    <!-- Карточка 3: Питание -->
-    <!-- Акцент на зеленый/синий -->
-    <button class="w-64 h-48 flex flex-col items-center justify-center gap-3 
+    <a href="nutrition.html" class="w-64 h-48 flex flex-col items-center justify-center gap-3 
                    bg-blue-900/30 backdrop-blur-md border border-blue-400/30 rounded-2xl 
                    text-white hover:bg-blue-900/50 hover:scale-105 transition-all duration-300 shadow-lg">
         <span class="text-4xl">🥗</span>
         <span class="text-lg font-bold tracking-wide">Питание</span>
         <span class="text-xs text-blue-200/80">1800 ккал</span>
-    </button>
+    </a>
 
 </div>
 

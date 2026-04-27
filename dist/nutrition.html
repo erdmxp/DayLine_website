@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Учёт КБЖУ</title>
+  <link rel="stylesheet" href="assets/main.css">
+</head>
+<body class="min-h-screen bg-cover bg-center bg-no-repeat text-white" style="background-image: url('../image/morning_main.png')">
+
+  <div class="min-h-screen bg-black/10 backdrop-brightness-95">
+    <header class="px-4 pt-5 sm:px-6">
+      <div class="mx-auto flex max-w-6xl translate-x-2 items-center justify-between rounded-full border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-md sm:translate-x-3">
+        <div class="pl-3">
+          <p class="text-lg font-semibold sm:text-2xl">Учёт КБЖУ</p>
+          <p class="text-xs text-white/80 sm:text-sm">Дневник питания по дням</p>
+        </div>
+
+        <nav class="flex items-center gap-2 sm:gap-3">
+          <a href="/main" class="rounded-full bg-white/10 px-4 py-2 text-sm transition hover:bg-white/20">
+            Главная
+          </a>
+          <a href="/logout" class="rounded-full bg-white/10 px-4 py-2 text-sm transition hover:bg-white/20">
+            Выйти
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[1.05fr_0.95fr]">
+      
+      <!-- Левая колонка -->
+      <section class="space-y-6">
+        <div class="rounded-[2rem] border border-white/20 bg-white/10 p-5 shadow-xl backdrop-blur-md sm:p-6">
+          <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p class="text-2xl font-semibold sm:text-3xl">Добавить продукт</p>
+              <p class="mt-1 text-sm text-white/80">Выбери дату, продукт и количество в граммах</p>
+            </div>
+
+            <div class="w-full sm:w-56">
+              <label for="foodDate" class="mb-2 block text-sm text-white/80">Дата</label>
+              <input
+                id="foodDate"
+                type="date"
+                class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white outline-none backdrop-blur-md focus:border-white/40"
+              />
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="relative">
+              <label for="productSearch" class="mb-2 block text-sm text-white/80">Продукт</label>
+              <input
+                id="productSearch"
+                type="text"
+                placeholder="Начни вводить продукт..."
+                autocomplete="off"
+                class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/60 outline-none backdrop-blur-md focus:border-white/40"
+              />
+
+              <ul
+                id="searchResults"
+                class="absolute z-20 mt-2 hidden max-h-64 w-full overflow-y-auto rounded-2xl border border-white/20 bg-slate-900/80 p-2 shadow-xl backdrop-blur-xl"
+              ></ul>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-[1fr_180px]">
+              <div class="rounded-2xl border border-white/20 bg-white/10 p-4 backdrop-blur-md">
+                <p class="text-sm text-white/70">Выбранный продукт</p>
+                <p id="selectedProductName" class="mt-2 text-lg font-semibold">Пока не выбран</p>
+
+                <div class="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+                  <div class="rounded-xl bg-white/10 p-3">
+                    <p class="text-white/70">Ккал</p>
+                    <p id="selectedCalories" class="mt-1 font-semibold">0</p>
+                  </div>
+                  <div class="rounded-xl bg-white/10 p-3">
+                    <p class="text-white/70">Белки</p>
+                    <p id="selectedProteins" class="mt-1 font-semibold">0</p>
+                  </div>
+                  <div class="rounded-xl bg-white/10 p-3">
+                    <p class="text-white/70">Углеводы</p>
+                    <p id="selectedCarbs" class="mt-1 font-semibold">0</p>
+                  </div>
+                  <div class="rounded-xl bg-white/10 p-3">
+                    <p class="text-white/70">Жиры</p>
+                    <p id="selectedFats" class="mt-1 font-semibold">0</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label for="gramsInput" class="mb-2 block text-sm text-white/80">Граммы</label>
+                <input
+                  id="gramsInput"
+                  type="number"
+                  min="1"
+                  placeholder="100"
+                  class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/60 outline-none backdrop-blur-md focus:border-white/40"
+                />
+
+                <button
+                  id="addFoodBtn"
+                  class="mt-4 w-full rounded-2xl bg-blue-600/80 px-4 py-3 font-semibold text-white transition hover:bg-blue-600"
+                >
+                  Добавить
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-[2rem] border border-white/20 bg-white/10 p-5 shadow-xl backdrop-blur-md sm:p-6">
+          <p class="text-xl font-semibold">Как пользоваться</p>
+          <ul class="mt-4 space-y-3 text-sm text-white/80">
+            <li class="rounded-xl bg-white/10 px-4 py-3">1. Выбери дату.</li>
+            <li class="rounded-xl bg-white/10 px-4 py-3">2. Начни вводить название продукта.</li>
+            <li class="rounded-xl bg-white/10 px-4 py-3">3. Выбери продукт из подсказок.</li>
+            <li class="rounded-xl bg-white/10 px-4 py-3">4. Введи граммы и нажми «Добавить».</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Правая колонка -->
+      <aside class="space-y-6">
+        <div class="rounded-[2rem] border border-white/20 bg-white/10 p-5 shadow-xl backdrop-blur-md sm:p-6">
+          <p class="text-2xl font-semibold">Итоги за день</p>
+          <p class="mt-1 text-sm text-white/75">Суммарные значения КБЖУ</p>
+
+          <div class="mt-5 grid grid-cols-2 gap-4">
+            <div class="rounded-2xl bg-white/10 p-4">
+              <p class="text-sm text-white/70">Калории</p>
+              <p id="totalCalories" class="mt-2 text-2xl font-bold">0</p>
+            </div>
+            <div class="rounded-2xl bg-white/10 p-4">
+              <p class="text-sm text-white/70">Белки</p>
+              <p id="totalProteins" class="mt-2 text-2xl font-bold">0</p>
+            </div>
+            <div class="rounded-2xl bg-white/10 p-4">
+              <p class="text-sm text-white/70">Углеводы</p>
+              <p id="totalCarbs" class="mt-2 text-2xl font-bold">0</p>
+            </div>
+            <div class="rounded-2xl bg-white/10 p-4">
+              <p class="text-sm text-white/70">Жиры</p>
+              <p id="totalFats" class="mt-2 text-2xl font-bold">0</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-[2rem] border border-white/20 bg-white/10 p-5 shadow-xl backdrop-blur-md sm:p-6 h-[430px] flex flex-col">
+  <div class="mb-4 flex items-center justify-between">
+    <div>
+      <p class="text-2xl font-semibold">За день</p>
+      <p id="currentNutritionDateLabel" class="text-sm text-white/75">Дата не выбрана</p>
+    </div>
+    <p id="entriesCounter" class="text-sm text-white/75"></p>
+  </div>
+
+  <div
+    id="foodListWrapper"
+    class="flex-1 overflow-y-auto pr-2"
+  >
+    <ul id="foodList" class="space-y-3"></ul>
+
+    <div id="emptyNutritionState" class="rounded-2xl border border-dashed border-white/20 bg-white/5 px-4 py-8 text-center text-white/70">
+      За выбранную дату пока нет добавленных продуктов
+    </div>
+  </div>
+</div>
+
+          <div id="pagination" class="mt-5 hidden flex-wrap items-center justify-center gap-2"></div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="/scripts/nutrition.js"></script>
+</body>
+</html>
