@@ -21,14 +21,14 @@
     <div class="flex justify-center pt-40 ">
         <div class="w-xl h-100">
             <div class="mx-auto bg-blue-400/40 h-max rounded-4xl w-lg p-6 pt-6 shadow-2xl">
-                <form id="registerForm" novalidate class="flex flex-col items-center gap-4">
+                <form id="registerForm" method="POST" novalidate class="flex flex-col items-center gap-4">
                     <p class="text-center text-gray-700 text-2xl">🥵</p>
                     <div class="w-full">
-                        <input type="email" id="email" name="login" required placeholder="example@gmail.com" class="w-full h-10 bg-white/60 rounded-4xl pl-4 text-xl outline-0 border-2 border-transparent">
+                        <input type="email" id="email" name="email" required placeholder="example@gmail.com" class="w-full h-10 bg-white/60 rounded-4xl pl-4 text-xl outline-0 border-2 border-transparent">
                         <p id="emailError" class="mt-1 hidden pl-4 text-lg text-red-500"></p>
                     </div>
                     <div class="w-full">
-                        <input type="text" id="username" name="username" required placeholder="Ваше имя" class="w-full h-10 bg-white/60 rounded-4xl pl-4 text-xl outline-0 border-2 border-transparent">
+                        <input type="text" id="username" name="login" required placeholder="Ваше имя" class="w-full h-10 bg-white/60 rounded-4xl pl-4 text-xl outline-0 border-2 border-transparent">
                         <p id="userError" class="mt-1 hidden pl-4 text-lg text-red-500"></p>
                     </div>
                     <div class="w-full">
@@ -36,7 +36,7 @@
                         <p id="passwordError" class="mt-1 hidden pl-4 text-lg text-red-500"></p>
                     </div>
                     <div class="w-full">
-                        <input type="password" id="repeatPassword" name="password" required placeholder="Повторите пароль" class="w-full h-10 bg-white/60 rounded-4xl pl-4 text-xl outline-0 border-2 border-transparent">
+                        <input type="password" id="repeatPassword" name="repeatPassword" required placeholder="Повторите пароль" class="w-full h-10 bg-white/60 rounded-4xl pl-4 text-xl outline-0 border-2 border-transparent">
                         <p id="repeatPasswordError" class="mt-1 hidden pl-4 text-lg text-red-500"></p>
                     </div>
                     
@@ -44,7 +44,7 @@
                 </form>
                 
 
-                </button>
+                
             </div>
         </div>
         
