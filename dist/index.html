@@ -10,28 +10,28 @@
 <!--для работы сперва в терминале ввести: npm run dev! -->
 
 <body>
-  <div class="h-screen bg-center bg-cover" style="background-image: url('../image/morning_main.png')">
+  <div class="min-h-screen bg-center bg-cover" style="background-image: url('../image/morning_main.png')">
     <header class="pt-5">
-      <div class="mx-auto bg-white/40 h-10 rounded-4xl w-lg">
+      <div class="mx-auto h-10 w-[calc(100%-2rem)] max-w-lg rounded-4xl bg-white/40">
         <p class="text-center p-1 text-xl">Добро пожаловать!👋</p>
       </div>
     </header>
 
   <!--авторизация-->
-    <div class="flex justify-center pt-40 ">
+    <div class="flex justify-center px-4 pb-8 pt-16 sm:pt-40">
       
-      <div class=" w-xl h-100">
+      <div class="h-auto w-full max-w-xl">
         <div class="text-center text-4xl">
           😃
         </div>
         
-        <div class="flex justify-center gap-8 pt-20">
+        <div class="flex flex-col justify-center gap-4 pt-10 sm:flex-row sm:gap-8 sm:pt-20">
 
-          <a href="autorisation.html" class="flex justify-center pt-13 w-70 h-40 bg-blue-700/50 rounded-[7rem] border-2 border-blue-500 text-gray-100 text-4xl hover:bg-blue-700/70 hover:scale-105 transition-all duration-300 shadow-lg">
+          <a href="autorisation.html" class="flex h-28 w-full items-center justify-center rounded-[7rem] border-2 border-blue-500 bg-blue-700/50 text-3xl text-gray-100 shadow-lg transition-all duration-300 hover:scale-105 hover:bg-blue-700/70 sm:h-40 sm:w-70 sm:text-4xl">
             Войти
           </a>
 
-          <a href="registration.html" class="flex justify-center pt-15 w-70 h-40 bg-gray-400/70 rounded-[7rem] border-2 border-gray-500 text-gray-100 text-2xl hover:bg-zinc-500/90 hover:scale-105 transition-all duration-300 shadow-lg">
+          <a href="registration.html" class="flex h-28 w-full items-center justify-center rounded-[7rem] border-2 border-gray-500 bg-gray-400/70 px-4 text-center text-xl text-gray-100 shadow-lg transition-all duration-300 hover:scale-105 hover:bg-zinc-500/90 sm:h-40 sm:w-70 sm:text-2xl">
             Зарегестрироваться
           </a>
 
