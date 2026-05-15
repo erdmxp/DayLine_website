@@ -66,6 +66,22 @@
                             class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-sm text-white placeholder-white/40 outline-none focus:border-white/50"
                         />
                         <div id="editHint" class="hidden text-xs text-white/40 mt-1 px-1"></div>
+                        <div class="mt-2 grid grid-cols-2 gap-2">
+                            <button
+                                id="saveTask"
+                                type="button"
+                                class="min-h-11 rounded-xl border border-green-300/30 bg-green-600/40 px-3 py-2 text-sm font-medium text-white transition hover:bg-green-600/60 active:scale-95"
+                            >
+                                Сохранить
+                            </button>
+                            <button
+                                id="cancelTask"
+                                type="button"
+                                class="min-h-11 rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white transition hover:bg-white/20 active:scale-95"
+                            >
+                                Отмена
+                            </button>
+                        </div>
                     </div>
 
                     <ul id="taskList" class="flex-1 overflow-y-auto px-2 py-2 space-y-1">

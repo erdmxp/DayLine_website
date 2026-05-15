@@ -34,6 +34,8 @@ const btnEdit         = document.getElementById('btnEdit');
 const taskInput       = document.getElementById('taskInput');
 const inputArea       = document.getElementById('inputArea');
 const editHint        = document.getElementById('editHint');
+const saveTask        = document.getElementById('saveTask');
+const cancelTask      = document.getElementById('cancelTask');
 const taskList        = document.getElementById('taskList');
 const emptyState      = document.getElementById('emptyState');
 const taskCounter     = document.getElementById('taskCounter');
@@ -135,23 +137,10 @@ function hideInput() {
     mode = null;
 }
 
-btnAdd.addEventListener('click', async () => {
-    if (mode === 'add') {
-        const text = taskInput.value.trim();
-        if (!text) { hideInput(); return; }
-        try {
-            const newTask = await api.insert(text, currentDate);
-            tasks.push(newTask);
-            render();
-        } catch (e) {
-            console.error('Ошибка добавления:', e);
-        }
-        hideInput();
-    } else {
-        mode = 'add';
-        setSelected(null);
-        showInput('Введите задачу...', '');
-    }
+btnAdd.addEventListener('click', () => {
+    mode = 'add';
+    setSelected(null);
+    showInput('Введите задачу...', 'Новая задача');
 });
 
 btnDelete.addEventListener('click', async () => {
@@ -168,30 +157,45 @@ btnDelete.addEventListener('click', async () => {
     }
 });
 
-btnEdit.addEventListener('click', async () => {
+btnEdit.addEventListener('click', () => {
     if (!selectedId) return;
-    if (mode === 'edit') {
-        const text = taskInput.value.trim();
-        if (!text) { hideInput(); return; }
-        try {
+    const task = tasks.find(t => String(t.tasks_id) === String(selectedId));
+    if (!task) return;
+    mode = 'edit';
+    showInput('Новое название...', 'Редактирование задачи', task.tasks);
+});
+
+async function saveCurrentTask() {
+    const text = taskInput.value.trim();
+    if (!text || !mode) {
+        taskInput.focus();
+        return;
+    }
+
+    try {
+        if (mode === 'add') {
+            const newTask = await api.insert(text, currentDate);
+            tasks.push(newTask);
+        } else if (mode === 'edit' && selectedId) {
             await api.update(selectedId, text);
             const task = tasks.find(t => String(t.tasks_id) === String(selectedId));
             if (task) task.tasks = text;
-            render();
-        } catch (e) {
-            console.error('Ошибка редактирования:', e);
         }
         hideInput();
-    } else {
-        const task = tasks.find(t => String(t.tasks_id) === String(selectedId));
-        if (!task) return;
-        mode = 'edit';
-        showInput('Новое название...', 'Редактирование задачи', task.tasks);
+        render();
+    } catch (e) {
+        console.error('Ошибка сохранения задачи:', e);
     }
-});
+}
+
+saveTask.addEventListener('click', saveCurrentTask);
+cancelTask.addEventListener('click', hideInput);
 
 taskInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter')  mode === 'add' ? btnAdd.click() : btnEdit.click();
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        saveCurrentTask();
+    }
     if (e.key === 'Escape') hideInput();
 });
 
