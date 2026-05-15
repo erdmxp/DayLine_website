@@ -86,7 +86,7 @@ const mainPage = (req, res) => {
 
 const logout = (req, res) => {
   req.session.destroy(() => {
-    res.redirect('/autorisation');
+    res.redirect('/autorisation.html');
   });
 };
 

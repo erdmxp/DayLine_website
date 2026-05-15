@@ -4,6 +4,8 @@ const session = require('express-session');
 const path = require('path');
 const authRoutes = require('./routes/authRoutes');
 const tasksRoutes = require('./routes/tasksRoutes');
+const nutritionRoutes = require('./routes/nutritionRoutes');
+const walletRoutes = require('./routes/walletRoutes');
 
 const app = express();
 
@@ -21,6 +23,12 @@ app.use('/scripts', express.static(path.join(__dirname, '../scripts')));
 app.use('/image', express.static(path.join(__dirname, '../image')));
 
 app.use('/api/tasks', tasksRoutes);
+app.use('/api/nutrition', nutritionRoutes);
+app.use('/api/wallet', walletRoutes);
 app.use(authRoutes);
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
 
 module.exports = app;
