@@ -25,10 +25,16 @@ const getTasks = async (req, res) => {
 const addTask = async (req, res) => {
     try {
         const { tasks, data_tasks } = req.body;
+        const taskText = typeof tasks === 'string' ? tasks.trim() : '';
+
+        if (!taskText) {
+            return res.status(400).json({ error: 'Введите текст задачи' });
+        }
+
         const date = data_tasks || new Date().toISOString().split('T')[0];
         const result = await pool.query(
             'INSERT INTO tasks (user_id, tasks, data_tasks) VALUES ($1, $2, $3::date) RETURNING *',
-            [req.session.userId, tasks, date]
+            [req.session.userId, taskText, date]
         );
         res.json(result.rows[0]);
     } catch (e) {
@@ -41,10 +47,21 @@ const updateTask = async (req, res) => {
     try {
         const { id } = req.params;
         const { tasks } = req.body;
+        const taskText = typeof tasks === 'string' ? tasks.trim() : '';
+
+        if (!taskText) {
+            return res.status(400).json({ error: 'Введите текст задачи' });
+        }
+
         const result = await pool.query(
             'UPDATE tasks SET tasks = $1 WHERE tasks_id = $2 AND user_id = $3 RETURNING *',
-            [tasks, id, req.session.userId]
+            [taskText, id, req.session.userId]
         );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Задача не найдена' });
+        }
+
         res.json(result.rows[0]);
     } catch (e) {
         console.error(e);
