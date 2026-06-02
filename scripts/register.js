@@ -1,7 +1,8 @@
 const form = document.getElementById('registerForm');
+const registerBtn = document.getElementById('registerBtn');
 
 const email = document.getElementById('email');
-const username = document.getElementById('username'); // или 'login', если у тебя в HTML id="login"
+const username = document.getElementById('username');
 const password = document.getElementById('password');
 const repeatPassword = document.getElementById('repeatPassword');
 
@@ -81,6 +82,7 @@ form.addEventListener('submit', async (e) => {
   }
 
   try {
+  await runWithButtonLoading(registerBtn, async () => {
     const response = await fetch('/registration', {
       method: 'POST',
       headers: {
@@ -96,13 +98,13 @@ form.addEventListener('submit', async (e) => {
     const text = await response.text();
 
     if (response.ok) {
-  window.location.href = '/main';
-  } else {
-  const text = await response.text();
-  alert(text);
-  }
-  } catch (error) {
-    console.error('FETCH ERROR:', error);
-    alert('Ошибка соединения с сервером');
-  }
+      window.location.href = '/main';
+    } else {
+      alert(text || 'Ошибка регистрации');
+    }
+  }, 'Регистрация...');
+} catch (error) {
+  console.error('FETCH ERROR:', error);
+  alert('Ошибка соединения с сервером');
+}
 });

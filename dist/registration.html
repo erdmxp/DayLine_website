@@ -8,21 +8,22 @@
     
 </head>
 
+<script src="/scripts/ui.js"></script>
 <script src="/scripts/register.js" defer></script>
 
 <body>
-  <div class="min-h-screen bg-center bg-cover" style="background-image: url('../image/morning_main.png')">
+  <div class="min-h-screen bg-center bg-cover bg-[url('/image/morning_main.png')] px-4 pb-10">
     <header class="pt-5">
-      <div class="mx-auto h-10 w-[calc(100%-2rem)] max-w-lg rounded-4xl bg-white/40">
-        <p class="text-center p-1 text-xl">регистрация</p>
+      <div class="mx-auto min-h-10 w-full max-w-lg rounded-4xl bg-white/40 px-4">
+        <p class="text-center p-1 text-xl">Регистрация</p>
       </div>
     </header>
 
-    <div class="flex justify-center px-4 pb-8 pt-12 sm:pt-32">
-        <div class="h-auto w-full max-w-xl">
-            <div class="mx-auto h-max w-full max-w-lg rounded-4xl bg-blue-400/40 p-4 shadow-2xl sm:p-6">
+    <div class="flex justify-center pt-12 sm:pt-24 lg:pt-32">
+        <div class="w-full max-w-xl">
+            <div class="mx-auto h-max w-full max-w-lg rounded-4xl bg-blue-400/40 p-5 shadow-2xl sm:p-6">
                 <form id="registerForm" method="POST" novalidate class="flex flex-col items-center gap-4">
-                    <p class="text-center text-gray-700 text-2xl">🥵</p>
+                    <p class="text-center text-gray-700 text-2xl">Добро пожалывать😎</p>
                     <div class="w-full">
                         <input type="email" id="email" name="email" required placeholder="example@gmail.com" class="w-full h-10 bg-white/60 rounded-4xl pl-4 text-xl outline-0 border-2 border-transparent">
                         <p id="emailError" class="mt-1 hidden pl-4 text-lg text-red-500"></p>
@@ -40,7 +41,14 @@
                         <p id="repeatPasswordError" class="mt-1 hidden pl-4 text-lg text-red-500"></p>
                     </div>
                     
-                    <button type="submit" class="w-60 h-15 text-center bg-blue-700/50 rounded-4xl text-2xl text-white border-2 border-blue-500 hover:bg-blue-700/70 hover:scale-105 transition-all duration-300 shadow-lg hover:cursor-pointer">Зарегестрироваться</button>
+                    <button type="submit" id="registerBtn" class="w-60 h-15 text-center bg-blue-700/50 rounded-4xl text-2xl text-white border-2 border-blue-500 hover:bg-blue-700/70 hover:scale-105 transition-all duration-300 shadow-lg hover:cursor-pointer">Зарегестрироваться</button>
+
+                    <div class="mt-4 text-center text-sm text-white/70">
+                        У вас уже есть аккаунт?
+                        <a href="/autorisation" class="ml-1 font-medium text-cyan-300 transition hover:text-cyan-200 hover:underline">
+                            Войти
+                        </a>
+                    </div>
                 </form>
                 
 
@@ -55,3 +63,4 @@
 
 
 </body>
+

@@ -1,9 +1,16 @@
-// src/routes/authRoutes.js
 const express = require('express');
+const path = require('path');
 const router = express.Router();
 
 const authController = require('../controllers/authController');
 const { requireAuth } = require('../middleware/authMiddleware');
+
+router.get('/autorisation', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../dist/autorisation.html'));
+});
+router.get('/registration', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../dist/registration.html'));
+});
 
 router.post('/registration', authController.register);
 router.post('/login', authController.login);

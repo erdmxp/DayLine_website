@@ -1,4 +1,5 @@
 const form = document.getElementById("autorisationForm");
+const loginDtn = document.getElementById("loginBtn");
 
 const login = document.getElementById("login");
 const password = document.getElementById("password");
@@ -58,6 +59,7 @@ form.addEventListener('submit', async (e) => {
   }
 
   try {
+  await runWithButtonLoading(loginBtn, async () => {
     const response = await fetch('/login', {
       method: 'POST',
       headers: {
@@ -84,8 +86,9 @@ form.addEventListener('submit', async (e) => {
         showErrorINPUT(inputError, text);
       }
     }
-  } catch (error) {
-    console.error('LOGIN FETCH ERROR:', error);
-    showErrorINPUT(inputError, 'Ошибка соединения с сервером');
-  }
+  }, 'Вход...');
+} catch (error) {
+  console.error('LOGIN FETCH ERROR:', error);
+  showErrorINPUT(inputError, 'Ошибка соединения с сервером');
+}
 });

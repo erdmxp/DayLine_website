@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 const tasksRoutes = require('./routes/tasksRoutes');
 const nutritionRoutes = require('./routes/nutritionRoutes');
 const walletRoutes = require('./routes/walletRoutes');
+const dishesRoutes = require('./routes/dishesRoutes');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/image', express.static(path.join(__dirname, '../image')));
 
 app.use('/api/tasks', tasksRoutes);
 app.use('/api/nutrition', nutritionRoutes);
+app.use('/api/dishes', dishesRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use(authRoutes);
 

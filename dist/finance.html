@@ -11,14 +11,14 @@
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),radial-gradient(circle_at_bottom,_rgba(168,85,247,0.15),_transparent_30%)]"></div>
 
     <section class="relative mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 sm:px-6 lg:px-8">
-      <header class="mb-6 flex items-center justify-between">
+      <header class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p class="text-sm uppercase tracking-[0.3em] text-cyan-300/80">Dayline</p>
-          <h1 class="mt-2 text-4xl font-semibold sm:text-5xl">Финансы</h1>
+          <h1 class="mt-2 text-3xl font-semibold sm:text-5xl">Финансы</h1>
           <p class="mt-2 text-sm text-white/70">Контроль расходов, доходов и баланса по месяцам</p>
         </div>
 
-        <nav class="flex items-center gap-3">
+        <nav class="grid w-full grid-cols-2 items-center gap-3 sm:flex sm:w-auto">
           <a href="/main" class="rounded-full bg-white/10 px-4 py-2 text-sm transition hover:bg-white/20">
             Главная
           </a>
@@ -92,6 +92,7 @@
 
               <button
                 type="submit"
+                id="addFinanceBtn"
                 class="w-full rounded-2xl bg-cyan-400 px-4 py-3 font-medium text-slate-950 transition hover:bg-cyan-300"
               >
                 Добавить
@@ -166,8 +167,8 @@
               </div>
             </div>
 
-            <div class="rounded-2xl border border-white/10 bg-black/10 p-4">
-              <div class="mb-3 flex items-center justify-between">
+            <div class="rounded-2xl border border-white/10 bg-black/10 p-3 sm:p-4">
+              <div class="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                 <p id="currentFinanceMonthLabel" class="text-sm text-white/75">Месяц не выбран</p>
                 <p id="financeCounter" class="text-sm text-white/75">0 операций</p>
               </div>
@@ -189,6 +190,8 @@
     </section>
   </main>
 
+  <script src="/scripts/ui.js"></script>
   <script src="/scripts/finance.js"></script>
 </body>
 </html>
+

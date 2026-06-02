@@ -100,7 +100,7 @@ const addEntry = async (req, res) => {
     const product = productResult.rows[0];
     const gramsValue = Number(grams);
 
-    if (!Number.isFinite(gramsValue) || gramsValue <= 0) {
+    if (gramsValue <= 0) {
       return res.status(400).send('Граммовка должна быть больше 0');
     }
 

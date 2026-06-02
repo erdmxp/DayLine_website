@@ -1,4 +1,5 @@
 const financeForm = document.getElementById('financeForm');
+const addFinanceBtn = document.getElementById('addFinanceBtn');
 const operationType = document.getElementById('operationType');
 const operationCategory = document.getElementById('operationCategory');
 const operationAmount = document.getElementById('operationAmount');
@@ -278,32 +279,37 @@ financeForm.addEventListener('submit', async (e) => {
     return;
   }
 
-  const response = await fetch('/api/wallet', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      type,
-      category,
-      amount,
-      date,
-      description
-    })
-  });
+  try {
+    await runWithButtonLoading(addFinanceBtn, async () => {
+      const response = await fetch('/api/wallet', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          type,
+          category,
+          amount,
+          date,
+          description
+        })
+      });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    alert(errorText || 'Ошибка при добавлении операции');
-    return;
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Ошибка при добавлении операции');
+      }
+
+      financeForm.reset();
+      operationType.value = 'expense';
+      operationDate.value = getTodayDate();
+      fillCategorySelect(operationCategory, operationType.value, false);
+
+      await updateFinanceView();
+    }, 'Добавление...');
+  } catch (error) {
+    alert(error.message || 'Ошибка при добавлении операции');
   }
-
-  financeForm.reset();
-  operationType.value = 'expense';
-  operationDate.value = getTodayDate();
-  fillCategorySelect(operationCategory, operationType.value, false);
-
-  await updateFinanceView();
 });
 
 financeList.addEventListener('click', async (e) => {
@@ -315,17 +321,33 @@ financeList.addEventListener('click', async (e) => {
 
   const id = button.dataset.id;
 
-  const response = await fetch(`/api/wallet/${id}`, {
-    method: 'DELETE'
-  });
+  try {
+    await runWithButtonLoading(button, async () => {
+      const response = await fetch(`/api/wallet/${id}`, {
+        method: 'DELETE'
+      });
 
-  if (!response.ok) {
-    alert('Ошибка при удалении операции');
-    return;
+      if (!response.ok) {
+        throw new Error('Ошибка при удалении операции');
+      }
+
+      await updateFinanceView();
+    }, 'Удаление...');
+  } catch (error) {
+    alert(error.message || 'Ошибка при удалении операции');
   }
-
-  await updateFinanceView();
 });
+
+function initFinancePage() {
+  operationDate.value = getTodayDate();
+  filterMonth.value = getCurrentMonth();
+
+  fillCategorySelect(operationCategory, 'expense', false);
+  fillFilterCategories();
+  updateFinanceView();
+}
+
+initFinancePage();
 
 function initFinancePage() {
   operationDate.value = getTodayDate();

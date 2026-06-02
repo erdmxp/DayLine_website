@@ -8,40 +8,40 @@
 </head>
 
 <body>
-    <div class="min-h-screen bg-cover bg-center" style="background-image: url('../image/morning_main.png')">
+    <div class="min-h-screen bg-[url('/image/morning_main.png')] bg-cover bg-center px-4 pb-10">
 
 
         <header class="pt-5">
-            <div class="mx-auto h-10 w-[calc(100%-2rem)] max-w-lg rounded-4xl bg-white/40">
+            <div class="mx-auto h-10 w-full max-w-lg rounded-4xl bg-white/40">
                 
             </div>
         </header>
 
 
-        <div class="flex flex-col items-center justify-center gap-5 px-4 pb-8 pt-12 md:flex-row md:gap-8 md:pt-40">
+        <div class="mx-auto grid max-w-5xl grid-cols-1 gap-5 pt-16 sm:grid-cols-2 sm:pt-28 lg:grid-cols-3 lg:gap-8 lg:pt-40">
     
-    <a href="todolist.html" class="h-40 w-full max-w-64 flex flex-col items-center justify-center gap-3 md:h-48 
+    <a href="todolist.html" class="h-40 w-full flex flex-col items-center justify-center gap-3 sm:h-48
                    bg-black/30 backdrop-blur-md border border-white/20 rounded-2xl 
                    text-white hover:bg-black/50 hover:scale-105 transition-all duration-300 shadow-lg">
         <span class="text-4xl">📝</span>
         <span class="text-lg font-bold tracking-wide">Список дел</span>
-        <span class="text-xs text-white/60">5 задач на сегодня</span>
+        <span class="text-xs text-white/60"></span>
     </a>
 
-    <a href="finance.html" class="h-40 w-full max-w-64 flex flex-col items-center justify-center gap-3 md:h-48 
+    <a href="finance.html" class="h-40 w-full flex flex-col items-center justify-center gap-3 sm:h-48
                    bg-pink-900/30 backdrop-blur-md border border-pink-400/30 rounded-2xl 
                    text-white hover:bg-pink-900/50 hover:scale-105 transition-all duration-300 shadow-lg">
         <span class="text-4xl">💳</span>
         <span class="text-lg font-bold tracking-wide">Финансы</span>
-        <span class="text-xs text-pink-200/80">Баланс: $1,200</span>
+        <span class="text-xs text-pink-200/80"></span>
     </a>
 
-    <a href="nutrition.html" class="h-40 w-full max-w-64 flex flex-col items-center justify-center gap-3 md:h-48 
+    <a href="nutrition.html" class="h-40 w-full flex flex-col items-center justify-center gap-3 sm:col-span-2 sm:h-48 lg:col-span-1
                    bg-blue-900/30 backdrop-blur-md border border-blue-400/30 rounded-2xl 
                    text-white hover:bg-blue-900/50 hover:scale-105 transition-all duration-300 shadow-lg">
         <span class="text-4xl">🥗</span>
         <span class="text-lg font-bold tracking-wide">Питание</span>
-        <span class="text-xs text-blue-200/80">1800 ккал</span>
+        <span class="text-xs text-blue-200/80"></span>
     </a>
 
 </div>
@@ -50,3 +50,4 @@
     </div>
 </body>
 </html>
+
