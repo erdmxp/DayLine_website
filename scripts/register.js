@@ -1,3 +1,5 @@
+
+
 const form = document.getElementById('registerForm');
 const registerBtn = document.getElementById('registerBtn');
 
@@ -100,11 +102,11 @@ form.addEventListener('submit', async (e) => {
     if (response.ok) {
       window.location.href = '/main';
     } else {
-      alert(text || 'Ошибка регистрации');
+      showToast(text || 'Ошибка регистрации');
     }
   }, 'Регистрация...');
 } catch (error) {
   console.error('FETCH ERROR:', error);
-  alert('Ошибка соединения с сервером');
+  showToast('Ошибка соединения с сервером');
 }
 });

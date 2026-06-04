@@ -26,13 +26,16 @@ const api = {
         const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
         if (!res.ok) throw new Error(await res.text());
     },
-    async generatePlan(goal) {
+    async chat(message, history) {
         const res = await fetch('/api/assistant/plan', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ goal })
+            body: JSON.stringify({ message, history })
         });
-        if (!res.ok) throw new Error(await res.text());
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.error || 'ИИ не смог ответить');
+        }
         return res.json();
     }
 };
@@ -56,16 +59,13 @@ const progressMessage  = document.getElementById('progressMessage');
 const nextTaskText     = document.getElementById('nextTaskText');
 const aiGoal           = document.getElementById('aiGoal');
 const generatePlanBtn  = document.getElementById('generatePlanBtn');
-const aiPlanArea       = document.getElementById('aiPlanArea');
-const aiPlanStatus     = document.getElementById('aiPlanStatus');
-const aiTaskList       = document.getElementById('aiTaskList');
-const addAiTasksBtn    = document.getElementById('addAiTasksBtn');
+const aiChatMessages   = document.getElementById('aiChatMessages');
 
 let tasks      = [];
 let selectedId = null;
 let mode       = null;
 let currentDate = null;
-let suggestedTasks = [];
+let aiHistory = [];
 
 function completionKey() {
     return `dayline-completed-${currentDate}`;
@@ -279,62 +279,84 @@ taskInput.addEventListener('keydown', e => {
     if (e.key === 'Escape') hideInput();
 });
 
-function renderSuggestedTasks(items, source) {
-    suggestedTasks = items;
-    aiTaskList.innerHTML = items.map((text, index) => `
-        <label class="flex cursor-pointer items-start gap-2 rounded-xl border border-white/10 bg-white/5 p-2.5 text-sm transition hover:bg-white/10">
-            <input type="checkbox" data-ai-index="${index}" checked class="mt-0.5 h-4 w-4 accent-blue-300">
-            <span>${escape(text)}</span>
-        </label>
-    `).join('');
-    aiPlanStatus.textContent = source === 'ai'
-        ? 'План подготовлен ИИ — проверьте шаги перед добавлением.'
-        : 'План подготовлен встроенным помощником.';
-    aiPlanArea.classList.remove('hidden');
+function appendChatMessage(role, message, proposedTasks = []) {
+    const wrapper = document.createElement('div');
+    wrapper.className = role === 'user'
+        ? 'ml-auto max-w-[88%] rounded-2xl rounded-tr-md bg-blue-400 px-3 py-2 text-sm text-slate-950'
+        : 'max-w-[95%] rounded-2xl rounded-tl-md bg-white/10 px-3 py-2 text-sm text-blue-50/90';
+
+    const text = document.createElement('p');
+    text.textContent = message;
+    wrapper.appendChild(text);
+
+    if (proposedTasks.length) {
+        const list = document.createElement('div');
+        list.className = 'mt-3 space-y-2';
+        proposedTasks.forEach(task => {
+            const row = document.createElement('div');
+            row.className = 'flex items-start gap-2 rounded-xl border border-white/10 bg-black/15 p-2';
+            const label = document.createElement('span');
+            label.className = 'flex-1';
+            label.textContent = task;
+            const add = document.createElement('button');
+            add.type = 'button';
+            add.className = 'shrink-0 rounded-lg bg-blue-300 px-2 py-1 text-xs font-semibold text-slate-950 disabled:opacity-60';
+            add.textContent = '+ Добавить';
+            add.addEventListener('click', async () => {
+                if (!currentDate) return;
+                try {
+                    await runWithButtonLoading(add, async () => {
+                        const newTask = await api.insert(task, currentDate);
+                        tasks.push(newTask);
+                    }, '…');
+                    add.textContent = 'Добавлено';
+                    add.disabled = true;
+                    render();
+                } catch (error) {
+                    showToast('Не удалось добавить задачу');
+                }
+            });
+            row.append(label, add);
+            list.appendChild(row);
+        });
+        wrapper.appendChild(list);
+    }
+
+    aiChatMessages.appendChild(wrapper);
+    aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
 }
 
-generatePlanBtn.addEventListener('click', async () => {
-    const goal = aiGoal.value.trim();
-    if (goal.length < 3) {
+async function sendAiMessage() {
+    const message = aiGoal.value.trim();
+    if (message.length < 2) {
         aiGoal.focus();
         return;
     }
 
+    appendChatMessage('user', message);
+    aiGoal.value = '';
+    const historyForRequest = aiHistory.slice(-6);
+    aiHistory.push({ role: 'user', content: message });
+
     try {
         const result = await runWithButtonLoading(
             generatePlanBtn,
-            () => api.generatePlan(goal),
-            'Составляю план...'
+            () => api.chat(message, historyForRequest),
+            'Думаю...'
         );
-        renderSuggestedTasks(result.tasks || [], result.source);
+        appendChatMessage('assistant', result.message, result.tasks || []);
+        aiHistory.push({ role: 'assistant', content: result.message });
     } catch (error) {
-        console.error('Ошибка генерации плана:', error);
-        aiPlanArea.classList.remove('hidden');
-        aiPlanStatus.textContent = 'Не удалось составить план. Попробуйте ещё раз.';
-        aiTaskList.innerHTML = '';
+        console.error('Ошибка AI-чата:', error);
+        appendChatMessage('assistant', error.message || 'ИИ сейчас не смог ответить. Попробуйте позже.');
     }
-});
+}
 
-addAiTasksBtn.addEventListener('click', async () => {
-    const selected = [...aiTaskList.querySelectorAll('[data-ai-index]:checked')]
-        .map(input => suggestedTasks[Number(input.dataset.aiIndex)])
-        .filter(Boolean);
-    if (!selected.length || !currentDate) return;
-
-    try {
-        await runWithButtonLoading(addAiTasksBtn, async () => {
-            for (const text of selected) {
-                const newTask = await api.insert(text, currentDate);
-                tasks.push(newTask);
-            }
-        }, `Добавляю: ${selected.length}`);
-        render();
-        aiPlanArea.classList.add('hidden');
-        aiGoal.value = '';
-        suggestedTasks = [];
-    } catch (error) {
-        console.error('Ошибка добавления плана:', error);
-        aiPlanStatus.textContent = 'Часть задач могла добавиться. Обновите список и повторите.';
+generatePlanBtn.addEventListener('click', sendAiMessage);
+aiGoal.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendAiMessage();
     }
 });
 

@@ -1,3 +1,5 @@
+
+
 const financeForm = document.getElementById('financeForm');
 const addFinanceBtn = document.getElementById('addFinanceBtn');
 const operationType = document.getElementById('operationType');
@@ -249,7 +251,7 @@ async function updateFinanceView() {
     await loadSummary();
   } catch (error) {
     console.error(error);
-    alert('Ошибка при загрузке данных финансов');
+    showToast('Ошибка при загрузке данных финансов');
   }
 }
 
@@ -275,7 +277,7 @@ financeForm.addEventListener('submit', async (e) => {
   const description = operationDescription.value.trim();
 
   if (!category || !amount || !date) {
-    alert('Заполни тип, категорию, сумму и дату');
+    showToast('Заполни тип, категорию, сумму и дату');
     return;
   }
 
@@ -308,7 +310,7 @@ financeForm.addEventListener('submit', async (e) => {
       await updateFinanceView();
     }, 'Добавление...');
   } catch (error) {
-    alert(error.message || 'Ошибка при добавлении операции');
+    showToast(error.message || 'Ошибка при добавлении операции');
   }
 });
 
@@ -334,7 +336,7 @@ financeList.addEventListener('click', async (e) => {
       await updateFinanceView();
     }, 'Удаление...');
   } catch (error) {
-    alert(error.message || 'Ошибка при удалении операции');
+    showToast(error.message || 'Ошибка при удалении операции');
   }
 });
 

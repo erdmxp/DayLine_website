@@ -1,3 +1,5 @@
+
+
 const api = {
   async searchProducts(query) {
     const res = await fetch(`/api/nutrition/products/search?q=${encodeURIComponent(query)}`);
@@ -307,7 +309,7 @@ function renderEntries() {
           await loadEntries();
         }, 'Удаление...');
       } catch (e) {
-        alert(e.message || 'Ошибка при удалении записи');
+        showToast(e.message || 'Ошибка при удалении записи');
       }
     });
   });
@@ -322,7 +324,7 @@ async function loadEntries() {
     renderEntries();
   } catch (e) {
     console.error(e);
-    alert('Не удалось загрузить записи');
+    showToast('Не удалось загрузить записи');
   }
 }
 
@@ -350,14 +352,14 @@ async function onProductSearchInput() {
 
 async function onAddFood() {
   if (!selectedProduct) {
-    alert('Сначала выбери продукт');
+    showToast('Сначала выбери продукт');
     return;
   }
 
   const grams = Number(gramsInput.value);
 
   if (!grams || grams <= 0) {
-    alert('Введите корректное количество грамм');
+    showToast('Введите корректное количество грамм');
     return;
   }
 
@@ -375,7 +377,7 @@ async function onAddFood() {
     resetSelectedProduct();
     await loadEntries();
   } catch (e) {
-    alert(e.message || 'Ошибка при добавлении продукта');
+    showToast(e.message || 'Ошибка при добавлении продукта');
   }
 }
 
@@ -468,7 +470,7 @@ function renderRecipeResults(items) {
         recipeSearch.value = dish.dish_name;
         hideRecipeResults();
       } catch (e) {
-        alert(e.message || 'Ошибка при выборе рецепта');
+        showToast(e.message || 'Ошибка при выборе рецепта');
       }
     });
   });
@@ -517,7 +519,7 @@ function renderQuickRecipeList() {
         const dish = await api.getDishById(btn.dataset.quickDishId);
         renderRecipePreview(dish);
       } catch (e) {
-        alert(e.message || 'Ошибка при выборе рецепта');
+        showToast(e.message || 'Ошибка при выборе рецепта');
       }
     });
   });
@@ -750,14 +752,14 @@ function renderRecipeIngredients() {
 
 function onAddIngredient() {
   if (!selectedRecipeProduct) {
-    alert('Сначала выбери продукт для рецепта');
+    showToast('Сначала выбери продукт для рецепта');
     return;
   }
 
   const grams = Number(recipeGramsInput.value);
 
   if (!grams || grams <= 0) {
-    alert('Введите корректную граммовку ингредиента');
+    showToast('Введите корректную граммовку ингредиента');
     return;
   }
 
@@ -788,12 +790,12 @@ async function onSaveRecipe() {
   const dishName = recipeNameInput.value.trim();
 
   if (!dishName) {
-    alert('Введите название рецепта');
+    showToast('Введите название рецепта');
     return;
   }
 
   if (!recipeIngredients.length) {
-    alert('Добавьте хотя бы один ингредиент');
+    showToast('Добавьте хотя бы один ингредиент');
     return;
   }
 
@@ -826,13 +828,13 @@ async function onSaveRecipe() {
       closeRecipeModal();
     }, editingDishId ? 'Сохранение...' : 'Создание...');
   } catch (e) {
-    alert(e.message || 'Ошибка при сохранении рецепта');
+    showToast(e.message || 'Ошибка при сохранении рецепта');
   }
 }
 
 async function onEditRecipe() {
   if (!selectedDish) {
-    alert('Сначала выбери рецепт');
+    showToast('Сначала выбери рецепт');
     return;
   }
 
@@ -843,13 +845,13 @@ async function onEditRecipe() {
       openRecipeModal('edit');
     }, 'Загрузка...');
   } catch (e) {
-    alert(e.message || 'Ошибка при загрузке рецепта');
+    showToast(e.message || 'Ошибка при загрузке рецепта');
   }
 }
 
 async function onDeleteRecipe() {
   if (!selectedDish) {
-    alert('Сначала выбери рецепт');
+    showToast('Сначала выбери рецепт');
     return;
   }
 
@@ -864,13 +866,13 @@ async function onDeleteRecipe() {
       await loadDishes();
     }, 'Удаление...');
   } catch (e) {
-    alert(e.message || 'Ошибка при удалении рецепта');
+    showToast(e.message || 'Ошибка при удалении рецепта');
   }
 }
 
 async function onAddRecipeToDay() {
   if (!selectedDish) {
-    alert('Сначала выбери рецепт');
+    showToast('Сначала выбери рецепт');
     return;
   }
 
@@ -884,9 +886,9 @@ async function onAddRecipeToDay() {
       await loadEntries();
     }, 'Добавление...');
 
-    alert('Рецепт добавлен в рацион');
+    showToast('Рецепт добавлен в рацион');
   } catch (e) {
-    alert(e.message || 'Ошибка при добавлении рецепта в рацион');
+    showToast(e.message || 'Ошибка при добавлении рецепта в рацион');
   }
 }
 

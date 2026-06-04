@@ -8,88 +8,76 @@ const cleanTasks = (items) => {
   )].slice(0, 8);
 };
 
-const createFallbackPlan = (goal) => {
-  const text = goal.trim().replace(/[.!?]+$/, '');
-  const lower = text.toLowerCase();
+const containsBlockedContent = (text) => {
+  const normalized = text.toLowerCase().replace(/ё/g, 'е');
+  return /(бля|хуй|пизд|еба|ебл|сука|мудак)/i.test(normalized);
+};
 
-  if (/экзамен|зач[её]т|учеб|курсов|диплом/.test(lower)) {
-    return [
-      `Собрать требования и материалы: ${text}`,
-      'Разделить материал на небольшие темы',
-      'Изучить первую тему и сделать конспект',
-      'Выполнить практическое задание',
-      'Проверить пробелы и повторить сложное',
-      'Провести итоговую самопроверку'
-    ];
-  }
-
-  if (/сайт|проект|приложен|разработ/.test(lower)) {
-    return [
-      `Уточнить результат и критерии готовности: ${text}`,
-      'Составить список необходимых функций',
-      'Сделать основной пользовательский сценарий',
-      'Проверить работу на телефоне и компьютере',
-      'Исправить найденные ошибки',
-      'Подготовить финальную версию к публикации'
-    ];
-  }
-
-  return [
-    `Определить конкретный результат: ${text}`,
-    'Подготовить всё необходимое для начала',
-    'Сделать первый небольшой шаг',
-    'Выполнить основную часть работы',
-    'Проверить результат и исправить недочёты',
-    'Зафиксировать итог и следующий шаг'
-  ];
+const parseAssistantResponse = (content) => {
+  const clean = String(content || '').replace(/^```(?:json)?\s*|\s*```$/g, '').trim();
+  const parsed = JSON.parse(clean);
+  return {
+    message: String(parsed.message || '').trim().slice(0, 700),
+    tasks: cleanTasks(parsed.tasks)
+  };
 };
 
 const generatePlan = async (req, res) => {
-  const goal = typeof req.body.goal === 'string' ? req.body.goal.trim() : '';
-  if (goal.length < 3 || goal.length > 500) {
-    return res.status(400).json({ error: 'Опишите цель текстом от 3 до 500 символов' });
+  const message = typeof req.body.message === 'string'
+    ? req.body.message.trim()
+    : typeof req.body.goal === 'string' ? req.body.goal.trim() : '';
+  const history = Array.isArray(req.body.history) ? req.body.history.slice(-6) : [];
+
+  if (message.length < 2 || message.length > 500) {
+    return res.status(400).json({ error: 'Напишите сообщение длиной от 2 до 500 символов' });
+  }
+  if (containsBlockedContent(message)) {
+    return res.status(400).json({ error: 'Запрос содержит нецензурную лексику. Переформулируйте его спокойнее.' });
   }
 
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
-    return res.json({ tasks: createFallbackPlan(goal), source: 'local' });
+    return res.status(503).json({ error: 'ИИ-помощник пока не настроен. Добавьте OPENROUTER_API_KEY в Render.' });
   }
+
+  const safeHistory = history
+    .filter(item => item && ['user', 'assistant'].includes(item.role) && typeof item.content === 'string')
+    .map(item => ({ role: item.role, content: item.content.slice(0, 700) }));
 
   try {
     const response = await fetch(`${process.env.AI_BASE_URL || 'https://openrouter.ai/api/v1'}/chat/completions`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': process.env.APP_URL || 'https://day-line.ru',
         'X-Title': 'DayLine'
       },
       body: JSON.stringify({
         model: process.env.AI_MODEL || 'openrouter/free',
-        temperature: 0.35,
-        max_tokens: 500,
+        temperature: 0.65,
+        max_tokens: 650,
         messages: [
           {
             role: 'system',
-            content: 'Ты помощник планировщика DayLine. Разбей цель на 4-8 конкретных коротких задач на русском языке. Каждая задача должна начинаться с глагола и быть выполнимой. Верни только JSON вида {"tasks":["задача"]}, без Markdown.'
+            content: 'Ты дружелюбный помощник DayLine по планированию. Веди короткий диалог на русском: если цель расплывчатая, задай один уточняющий вопрос и верни пустой массив tasks. Если информации достаточно, предложи 3-7 конкретных коротких задач. Не обсуждай опасные, незаконные или оскорбительные запросы. Отвечай строго JSON: {"message":"короткий ответ","tasks":["задача"]}. Без Markdown.'
           },
-          { role: 'user', content: goal }
+          ...safeHistory,
+          { role: 'user', content: message }
         ]
       }),
-      signal: AbortSignal.timeout(20000)
+      signal: AbortSignal.timeout(25000)
     });
 
     if (!response.ok) throw new Error(`AI HTTP ${response.status}`);
     const data = await response.json();
-    const content = data.choices?.[0]?.message?.content || '';
-    const parsed = JSON.parse(content.replace(/^```(?:json)?\s*|\s*```$/g, '').trim());
-    const tasks = cleanTasks(parsed.tasks);
-    if (tasks.length < 2) throw new Error('AI вернул некорректный план');
-    return res.json({ tasks, source: 'ai' });
+    const result = parseAssistantResponse(data.choices?.[0]?.message?.content);
+    if (!result.message) throw new Error('Пустой ответ модели');
+    return res.json(result);
   } catch (error) {
-    console.error('Ошибка AI-планировщика:', error.message);
-    return res.json({ tasks: createFallbackPlan(goal), source: 'fallback' });
+    console.error('Ошибка AI-помощника:', error.message);
+    return res.status(502).json({ error: 'ИИ сейчас не смог ответить. Попробуйте ещё раз через минуту.' });
   }
 };
 
-module.exports = { generatePlan, createFallbackPlan, cleanTasks };
+module.exports = { generatePlan, cleanTasks, containsBlockedContent, parseAssistantResponse };
