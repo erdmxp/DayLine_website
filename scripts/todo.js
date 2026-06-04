@@ -40,11 +40,49 @@ const taskList        = document.getElementById('taskList');
 const emptyState      = document.getElementById('emptyState');
 const taskCounter     = document.getElementById('taskCounter');
 const currentDateLabel = document.getElementById('currentDateLabel');
+const completedCount   = document.getElementById('completedCount');
+const totalCount       = document.getElementById('totalCount');
+const progressBar      = document.getElementById('progressBar');
+const progressMessage  = document.getElementById('progressMessage');
+const nextTaskText     = document.getElementById('nextTaskText');
 
 let tasks      = [];
 let selectedId = null;
 let mode       = null;
 let currentDate = null;
+
+function completionKey() {
+    return `dayline-completed-${currentDate}`;
+}
+
+function getCompletedIds() {
+    try {
+        return new Set(JSON.parse(localStorage.getItem(completionKey()) || '[]').map(String));
+    } catch {
+        return new Set();
+    }
+}
+
+function saveCompletedIds(ids) {
+    localStorage.setItem(completionKey(), JSON.stringify([...ids]));
+}
+
+function updateFocus() {
+    const completed = getCompletedIds();
+    const done = tasks.filter(task => completed.has(String(task.tasks_id))).length;
+    const percent = tasks.length ? Math.round(done / tasks.length * 100) : 0;
+    const next = tasks.find(task => !completed.has(String(task.tasks_id)));
+
+    completedCount.textContent = done;
+    totalCount.textContent = `из ${tasks.length} выполнено`;
+    progressBar.style.width = `${percent}%`;
+    progressMessage.textContent = !tasks.length
+        ? 'Добавьте первую задачу на этот день.'
+        : done === tasks.length
+            ? 'Отлично! Все задачи на день выполнены.'
+            : `Готово ${percent}%. Продолжайте в том же темпе.`;
+    nextTaskText.textContent = !tasks.length ? 'Пока задач нет' : next ? next.tasks : 'Все задачи выполнены';
+}
 
 function formatDateLabel(dateStr) {
     const [year, month, day] = dateStr.split('-').map(Number);
@@ -64,6 +102,8 @@ function updateCounter() {
 
 function setSelected(id) {
     selectedId = id;
+    btnEdit.disabled = !id;
+    btnDelete.disabled = !id;
     document.querySelectorAll('#taskList li[data-id]').forEach(el => {
         const sel = String(el.dataset.id) === String(id);
         el.classList.toggle('bg-white/15', sel);
@@ -77,18 +117,24 @@ function render() {
     if (tasks.length === 0) {
         emptyState.style.display = '';
         updateCounter();
+        updateFocus();
         return;
     }
     emptyState.style.display = 'none';
 
+    const completed = getCompletedIds();
     tasks.forEach(task => {
+        const isCompleted = completed.has(String(task.tasks_id));
         const li = document.createElement('li');
         li.dataset.id = task.tasks_id;
-        li.className = `group flex items-center gap-2 px-2 py-1.5 rounded-xl cursor-pointer transition-all duration-150
+        li.className = `group flex items-center gap-3 rounded-2xl border border-white/10 px-3 py-3 cursor-pointer transition-all duration-150
             ${String(task.tasks_id) === String(selectedId) ? 'bg-white/15' : 'bg-white/5'} hover:bg-white/10`;
 
         li.innerHTML = `
-            <span class="flex-1 text-sm leading-tight select-none text-white">${escape(task.tasks)}</span>
+            <button type="button" class="complete-toggle flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border transition
+                ${isCompleted ? 'border-emerald-300 bg-emerald-500 text-white' : 'border-white/30 bg-white/5 text-transparent'}"
+                aria-label="${isCompleted ? 'Вернуть задачу в работу' : 'Отметить задачу выполненной'}">✓</button>
+            <span class="flex-1 select-none text-sm leading-tight text-white ${isCompleted ? 'line-through opacity-50' : ''}">${escape(task.tasks)}</span>
             <button class="inline-delete opacity-0 group-hover:opacity-100 flex-shrink-0 w-6 h-6 flex items-center
                 justify-center rounded-lg text-white/40 hover:text-red-300 hover:bg-red-500/20 transition-all duration-150"
                 aria-label="Удалить">
@@ -97,6 +143,15 @@ function render() {
                 </svg>
             </button>
         `;
+
+        li.querySelector('.complete-toggle').addEventListener('click', e => {
+            e.stopPropagation();
+            const ids = getCompletedIds();
+            const id = String(task.tasks_id);
+            ids.has(id) ? ids.delete(id) : ids.add(id);
+            saveCompletedIds(ids);
+            render();
+        });
 
         li.addEventListener('click', e => {
             if (e.target.closest('.inline-delete')) return;
@@ -108,6 +163,9 @@ function render() {
             try {
                 await api.delete(task.tasks_id);
                 tasks = tasks.filter(t => String(t.tasks_id) !== String(task.tasks_id));
+                const ids = getCompletedIds();
+                ids.delete(String(task.tasks_id));
+                saveCompletedIds(ids);
                 if (String(selectedId) === String(task.tasks_id)) selectedId = null;
                 render();
             } catch (err) {
@@ -119,6 +177,7 @@ function render() {
     });
 
     updateCounter();
+    updateFocus();
 }
 
 function showInput(placeholder, hint, value = '') {
@@ -144,11 +203,14 @@ btnAdd.addEventListener('click', () => {
 });
 
 btnDelete.addEventListener('click', async () => {
-    const idToDelete = selectedId ?? (tasks.length ? tasks[tasks.length - 1].tasks_id : null);
+    const idToDelete = selectedId;
     if (!idToDelete) return;
     try {
-        await api.delete(idToDelete);
+        await runWithButtonLoading(btnDelete, () => api.delete(idToDelete), 'Удаление...');
         tasks = tasks.filter(t => String(t.tasks_id) !== String(idToDelete));
+        const ids = getCompletedIds();
+        ids.delete(String(idToDelete));
+        saveCompletedIds(ids);
         if (String(selectedId) === String(idToDelete)) selectedId = null;
         hideInput();
         render();
@@ -173,14 +235,16 @@ async function saveCurrentTask() {
     }
 
     try {
-        if (mode === 'add') {
-            const newTask = await api.insert(text, currentDate);
-            tasks.push(newTask);
-        } else if (mode === 'edit' && selectedId) {
-            await api.update(selectedId, text);
-            const task = tasks.find(t => String(t.tasks_id) === String(selectedId));
-            if (task) task.tasks = text;
-        }
+        await runWithButtonLoading(saveTask, async () => {
+            if (mode === 'add') {
+                const newTask = await api.insert(text, currentDate);
+                tasks.push(newTask);
+            } else if (mode === 'edit' && selectedId) {
+                await api.update(selectedId, text);
+                const task = tasks.find(t => String(t.tasks_id) === String(selectedId));
+                if (task) task.tasks = text;
+            }
+        }, 'Сохранение...');
         hideInput();
         render();
     } catch (e) {
@@ -203,6 +267,7 @@ async function loadTasksForDate(date) {
     currentDate = date;
     hideInput();
     selectedId = null;
+    setSelected(null);
     currentDateLabel.textContent = formatDateLabel(date);
     try {
         tasks = await api.getByDate(date);
