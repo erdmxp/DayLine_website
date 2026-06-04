@@ -25,6 +25,15 @@ const api = {
     async delete(id) {
         const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
         if (!res.ok) throw new Error(await res.text());
+    },
+    async generatePlan(goal) {
+        const res = await fetch('/api/assistant/plan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ goal })
+        });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
     }
 };
 
@@ -45,11 +54,18 @@ const totalCount       = document.getElementById('totalCount');
 const progressBar      = document.getElementById('progressBar');
 const progressMessage  = document.getElementById('progressMessage');
 const nextTaskText     = document.getElementById('nextTaskText');
+const aiGoal           = document.getElementById('aiGoal');
+const generatePlanBtn  = document.getElementById('generatePlanBtn');
+const aiPlanArea       = document.getElementById('aiPlanArea');
+const aiPlanStatus     = document.getElementById('aiPlanStatus');
+const aiTaskList       = document.getElementById('aiTaskList');
+const addAiTasksBtn    = document.getElementById('addAiTasksBtn');
 
 let tasks      = [];
 let selectedId = null;
 let mode       = null;
 let currentDate = null;
+let suggestedTasks = [];
 
 function completionKey() {
     return `dayline-completed-${currentDate}`;
@@ -261,6 +277,65 @@ taskInput.addEventListener('keydown', e => {
         saveCurrentTask();
     }
     if (e.key === 'Escape') hideInput();
+});
+
+function renderSuggestedTasks(items, source) {
+    suggestedTasks = items;
+    aiTaskList.innerHTML = items.map((text, index) => `
+        <label class="flex cursor-pointer items-start gap-2 rounded-xl border border-white/10 bg-white/5 p-2.5 text-sm transition hover:bg-white/10">
+            <input type="checkbox" data-ai-index="${index}" checked class="mt-0.5 h-4 w-4 accent-blue-300">
+            <span>${escape(text)}</span>
+        </label>
+    `).join('');
+    aiPlanStatus.textContent = source === 'ai'
+        ? 'План подготовлен ИИ — проверьте шаги перед добавлением.'
+        : 'План подготовлен встроенным помощником.';
+    aiPlanArea.classList.remove('hidden');
+}
+
+generatePlanBtn.addEventListener('click', async () => {
+    const goal = aiGoal.value.trim();
+    if (goal.length < 3) {
+        aiGoal.focus();
+        return;
+    }
+
+    try {
+        const result = await runWithButtonLoading(
+            generatePlanBtn,
+            () => api.generatePlan(goal),
+            'Составляю план...'
+        );
+        renderSuggestedTasks(result.tasks || [], result.source);
+    } catch (error) {
+        console.error('Ошибка генерации плана:', error);
+        aiPlanArea.classList.remove('hidden');
+        aiPlanStatus.textContent = 'Не удалось составить план. Попробуйте ещё раз.';
+        aiTaskList.innerHTML = '';
+    }
+});
+
+addAiTasksBtn.addEventListener('click', async () => {
+    const selected = [...aiTaskList.querySelectorAll('[data-ai-index]:checked')]
+        .map(input => suggestedTasks[Number(input.dataset.aiIndex)])
+        .filter(Boolean);
+    if (!selected.length || !currentDate) return;
+
+    try {
+        await runWithButtonLoading(addAiTasksBtn, async () => {
+            for (const text of selected) {
+                const newTask = await api.insert(text, currentDate);
+                tasks.push(newTask);
+            }
+        }, `Добавляю: ${selected.length}`);
+        render();
+        aiPlanArea.classList.add('hidden');
+        aiGoal.value = '';
+        suggestedTasks = [];
+    } catch (error) {
+        console.error('Ошибка добавления плана:', error);
+        aiPlanStatus.textContent = 'Часть задач могла добавиться. Обновите список и повторите.';
+    }
 });
 
 async function loadTasksForDate(date) {
