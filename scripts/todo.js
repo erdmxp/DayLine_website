@@ -41,8 +41,6 @@ const api = {
 };
 
 const btnAdd          = document.getElementById('btnAdd');
-const btnDelete       = document.getElementById('btnDelete');
-const btnEdit         = document.getElementById('btnEdit');
 const taskInput       = document.getElementById('taskInput');
 const inputArea       = document.getElementById('inputArea');
 const editHint        = document.getElementById('editHint');
@@ -118,12 +116,11 @@ function updateCounter() {
 
 function setSelected(id) {
     selectedId = id;
-    btnEdit.disabled = !id;
-    btnDelete.disabled = !id;
     document.querySelectorAll('#taskList li[data-id]').forEach(el => {
         const sel = String(el.dataset.id) === String(id);
         el.classList.toggle('bg-white/15', sel);
         el.classList.toggle('bg-white/5', !sel);
+        el.querySelector('.task-actions')?.classList.toggle('hidden', !sel);
     });
 }
 
@@ -143,21 +140,18 @@ function render() {
         const isCompleted = completed.has(String(task.tasks_id));
         const li = document.createElement('li');
         li.dataset.id = task.tasks_id;
-        li.className = `group flex items-center gap-3 rounded-2xl border border-white/10 px-3 py-3 cursor-pointer transition-all duration-150
+        li.className = `group flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 px-3 py-3 cursor-pointer transition-all duration-150
             ${String(task.tasks_id) === String(selectedId) ? 'bg-white/15' : 'bg-white/5'} hover:bg-white/10`;
 
         li.innerHTML = `
             <button type="button" class="complete-toggle flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border transition
                 ${isCompleted ? 'border-emerald-300 bg-emerald-500 text-white' : 'border-white/30 bg-white/5 text-transparent'}"
                 aria-label="${isCompleted ? 'Вернуть задачу в работу' : 'Отметить задачу выполненной'}">✓</button>
-            <span class="flex-1 select-none text-sm leading-tight text-white ${isCompleted ? 'line-through opacity-50' : ''}">${escape(task.tasks)}</span>
-            <button class="inline-delete opacity-0 group-hover:opacity-100 flex-shrink-0 w-6 h-6 flex items-center
-                justify-center rounded-lg text-white/40 hover:text-red-300 hover:bg-red-500/20 transition-all duration-150"
-                aria-label="Удалить">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                    <path d="M2 2l8 8M10 2l-8 8"/>
-                </svg>
-            </button>
+            <span class="min-w-0 flex-1 break-words select-none text-sm leading-tight text-white ${isCompleted ? 'line-through opacity-50' : ''}">${escape(task.tasks)}</span>
+            <div class="task-actions ${String(task.tasks_id) === String(selectedId) ? 'flex' : 'hidden'} ml-10 w-full justify-end gap-1 sm:ml-0 sm:flex sm:w-auto sm:shrink-0 sm:opacity-0 sm:transition sm:group-hover:opacity-100">
+                <button type="button" class="task-edit min-h-9 rounded-xl bg-blue-500/25 px-2.5 text-xs text-blue-100 hover:bg-blue-500/45" aria-label="Изменить задачу">Изменить</button>
+                <button type="button" class="task-delete min-h-9 rounded-xl bg-red-500/25 px-2.5 text-xs text-red-100 hover:bg-red-500/45" aria-label="Удалить задачу">Удалить</button>
+            </div>
         `;
 
         li.querySelector('.complete-toggle').addEventListener('click', e => {
@@ -170,14 +164,22 @@ function render() {
         });
 
         li.addEventListener('click', e => {
-            if (e.target.closest('.inline-delete')) return;
+            if (e.target.closest('.complete-toggle, .task-actions')) return;
             setSelected(String(task.tasks_id) === String(selectedId) ? null : task.tasks_id);
         });
 
-        li.querySelector('.inline-delete').addEventListener('click', async e => {
+        li.querySelector('.task-edit').addEventListener('click', e => {
             e.stopPropagation();
+            selectedId = task.tasks_id;
+            mode = 'edit';
+            showInput('Новое название...', 'Редактирование задачи', task.tasks);
+        });
+
+        li.querySelector('.task-delete').addEventListener('click', async e => {
+            e.stopPropagation();
+            const button = e.currentTarget;
             try {
-                await api.delete(task.tasks_id);
+                await runWithButtonLoading(button, () => api.delete(task.tasks_id), '…');
                 tasks = tasks.filter(t => String(t.tasks_id) !== String(task.tasks_id));
                 const ids = getCompletedIds();
                 ids.delete(String(task.tasks_id));
@@ -216,31 +218,6 @@ btnAdd.addEventListener('click', () => {
     mode = 'add';
     setSelected(null);
     showInput('Введите задачу...', 'Новая задача');
-});
-
-btnDelete.addEventListener('click', async () => {
-    const idToDelete = selectedId;
-    if (!idToDelete) return;
-    try {
-        await runWithButtonLoading(btnDelete, () => api.delete(idToDelete), 'Удаление...');
-        tasks = tasks.filter(t => String(t.tasks_id) !== String(idToDelete));
-        const ids = getCompletedIds();
-        ids.delete(String(idToDelete));
-        saveCompletedIds(ids);
-        if (String(selectedId) === String(idToDelete)) selectedId = null;
-        hideInput();
-        render();
-    } catch (e) {
-        console.error('Ошибка удаления:', e);
-    }
-});
-
-btnEdit.addEventListener('click', () => {
-    if (!selectedId) return;
-    const task = tasks.find(t => String(t.tasks_id) === String(selectedId));
-    if (!task) return;
-    mode = 'edit';
-    showInput('Новое название...', 'Редактирование задачи', task.tasks);
 });
 
 async function saveCurrentTask() {

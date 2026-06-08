@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/assets/main.css">
 </head>
 <body class="min-h-screen bg-slate-950 text-white">
-  <div class="min-h-screen bg-cover bg-center bg-fixed" style="background-image: linear-gradient(rgba(2,6,23,.38),rgba(2,6,23,.58)), url('/image/morning_main.png')">
+  <div class="min-h-screen bg-cover bg-center bg-fixed" style="background-image:linear-gradient(rgba(2,6,23,.38),rgba(2,6,23,.58)),url('/image/morning_main.png')">
     <header class="px-4 pt-5 sm:px-6">
       <div class="mx-auto flex max-w-6xl flex-col gap-3 rounded-[1.5rem] border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between sm:rounded-full">
         <div class="px-2">
@@ -21,91 +21,85 @@
       </div>
     </header>
 
-    <main class="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 xl:grid-cols-[1fr_1.1fr_.8fr]">
-      <section class="min-h-[390px] rounded-[2rem] border border-white/20 bg-black/25 p-5 shadow-xl backdrop-blur-md">
-        <div class="mb-4">
-          <p class="text-sm text-white/60">Выберите день</p>
-          <h1 class="mt-1 text-2xl font-semibold">Календарь</h1>
-        </div>
-        <div class="flex items-center justify-between mb-4">
-          <button id="prevMonth" type="button" aria-label="Предыдущий месяц" class="min-h-11 min-w-11 rounded-xl bg-white/10 p-2 transition hover:bg-white/20">
-            <svg class="mx-auto h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-          </button>
-          <h2 id="monthYear" class="text-lg font-semibold"></h2>
-          <button id="nextMonth" type="button" aria-label="Следующий месяц" class="min-h-11 min-w-11 rounded-xl bg-white/10 p-2 transition hover:bg-white/20">
-            <svg class="mx-auto h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-          </button>
-        </div>
-        <div class="grid grid-cols-7 gap-1 mb-2 text-center text-xs text-white/60">
-          <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
-        </div>
-        <div id="calendarDays" class="grid grid-cols-7 gap-1"></div>
-      </section>
-
-      <section class="flex min-h-[390px] flex-col rounded-[2rem] border border-white/20 bg-black/30 p-5 shadow-xl backdrop-blur-md">
-        <div class="mb-4 flex items-start justify-between gap-3">
-          <div>
-            <p id="currentDateLabel" class="text-sm text-white/60"></p>
-            <h2 class="mt-1 text-2xl font-semibold">Задачи на день</h2>
+    <main class="mx-auto grid max-w-6xl items-start gap-6 px-4 py-6 sm:px-6 xl:grid-cols-[.82fr_1.38fr]">
+      <div class="min-w-0 space-y-6 xl:sticky xl:top-6">
+        <section class="h-fit rounded-[2rem] border border-white/20 bg-black/25 p-5 shadow-xl backdrop-blur-md">
+          <div class="mb-4">
+            <p class="text-sm text-white/60">Выберите день</p>
+            <h1 class="mt-1 text-2xl font-semibold">Календарь</h1>
           </div>
-          <button id="btnAdd" type="button" class="min-h-11 shrink-0 rounded-2xl bg-emerald-500/80 px-4 py-2 text-sm font-semibold transition hover:bg-emerald-500 active:scale-95">+ Новая</button>
-        </div>
-
-        <div id="inputArea" class="hidden mb-4 rounded-2xl border border-white/15 bg-white/10 p-3">
-          <div id="editHint" class="mb-2 text-xs font-medium text-white/60"></div>
-          <input id="taskInput" type="text" maxlength="80" placeholder="Что нужно сделать?" class="w-full rounded-xl border border-white/20 bg-black/20 px-3 py-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-white/50">
-          <div class="mt-2 grid grid-cols-2 gap-2">
-            <button id="saveTask" type="button" class="min-h-11 rounded-xl bg-emerald-500/80 px-3 py-2 text-sm font-semibold transition hover:bg-emerald-500">Сохранить</button>
-            <button id="cancelTask" type="button" class="min-h-11 rounded-xl bg-white/10 px-3 py-2 text-sm font-medium transition hover:bg-white/20">Отмена</button>
+          <div class="mb-4 flex items-center justify-between">
+            <button id="prevMonth" type="button" aria-label="Предыдущий месяц" class="min-h-11 min-w-11 rounded-xl bg-white/10 p-2 transition hover:bg-white/20">
+              <svg class="mx-auto h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <h2 id="monthYear" class="text-lg font-semibold"></h2>
+            <button id="nextMonth" type="button" aria-label="Следующий месяц" class="min-h-11 min-w-11 rounded-xl bg-white/10 p-2 transition hover:bg-white/20">
+              <svg class="mx-auto h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
           </div>
-        </div>
-
-        <ul id="taskList" class="flex-1 space-y-2 overflow-y-auto pr-1">
-          <li id="emptyState" class="flex h-full min-h-40 flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 text-center text-white/45">
-            <svg class="mb-2 h-9 w-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-            <span>На этот день задач пока нет</span>
-          </li>
-        </ul>
-
-        <div class="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
-          <span id="taskCounter" class="text-xs text-white/50"></span>
-          <div class="flex gap-2">
-            <button id="btnEdit" type="button" class="min-h-11 rounded-xl bg-blue-500/25 px-3 text-sm transition hover:bg-blue-500/40 disabled:cursor-not-allowed disabled:opacity-40">Изменить</button>
-            <button id="btnDelete" type="button" class="min-h-11 rounded-xl bg-red-500/25 px-3 text-sm transition hover:bg-red-500/40 disabled:cursor-not-allowed disabled:opacity-40">Удалить</button>
+          <div class="mb-2 grid grid-cols-7 gap-1 text-center text-xs text-white/60">
+            <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
           </div>
-        </div>
-      </section>
+          <div id="calendarDays" class="grid grid-cols-7 gap-1"></div>
+        </section>
 
-      <aside class="rounded-[2rem] border border-blue-300/25 bg-blue-900/35 p-5 shadow-xl backdrop-blur-md">
-        <p class="text-sm text-blue-100/70">Фокус дня</p>
-        <h2 class="mt-1 text-2xl font-semibold">Ваш прогресс</h2>
-        <div class="mt-6 flex items-end gap-2">
-          <span id="completedCount" class="text-5xl font-bold">0</span>
-          <span id="totalCount" class="pb-1 text-white/60">из 0 выполнено</span>
-        </div>
-        <div class="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
-          <div id="progressBar" class="h-full w-0 rounded-full bg-blue-300 transition-all duration-500"></div>
-        </div>
-        <p id="progressMessage" class="mt-3 text-sm text-blue-100/75">Добавьте первую задачу на этот день.</p>
-        <div class="mt-6 rounded-2xl border border-white/10 bg-white/10 p-4">
-          <p class="text-xs uppercase tracking-wider text-blue-100/60">Следующая задача</p>
-          <p id="nextTaskText" class="mt-2 font-medium">Пока задач нет</p>
-        </div>
-        <div class="mt-5 border-t border-white/10 pt-5">
-          <div class="mb-3 flex items-center justify-between gap-2">
+        <aside class="rounded-[2rem] border border-blue-300/25 bg-blue-900/35 p-5 shadow-xl backdrop-blur-md">
+          <div class="flex items-start justify-between gap-3">
             <div>
-              <p class="text-xs uppercase tracking-wider text-blue-100/60">DayLine AI</p>
-              <h3 class="mt-1 font-semibold">Помощник по задачам</h3>
+              <p class="text-sm text-blue-100/70">Прогресс дня</p>
+              <h2 class="mt-1 text-xl font-semibold">Держим темп</h2>
             </div>
+            <div class="text-right">
+              <span id="completedCount" class="text-3xl font-bold">0</span>
+              <span id="totalCount" class="block text-xs text-white/60">из 0 выполнено</span>
+            </div>
+          </div>
+          <div class="mt-4 h-2 overflow-hidden rounded-full bg-white/10"><div id="progressBar" class="h-full w-0 rounded-full bg-blue-300 transition-all duration-500"></div></div>
+          <p id="progressMessage" class="mt-3 text-sm text-blue-100/75">Добавьте первую задачу на этот день.</p>
+          <div class="mt-4 rounded-2xl border border-white/10 bg-white/10 p-3">
+            <p class="text-[10px] uppercase tracking-wider text-blue-100/60">Следующая задача</p>
+            <p id="nextTaskText" class="mt-1 text-sm font-medium">Пока задач нет</p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="min-w-0 space-y-6">
+        <section class="flex h-[520px] min-h-0 flex-col rounded-[2rem] border border-white/20 bg-black/30 p-5 shadow-xl backdrop-blur-md sm:h-[600px]">
+          <div class="mb-4 flex items-start justify-between gap-3">
+            <div><p id="currentDateLabel" class="text-sm text-white/60"></p><h2 class="mt-1 text-2xl font-semibold">Задачи на день</h2></div>
+            <button id="btnAdd" type="button" class="min-h-11 shrink-0 rounded-2xl bg-emerald-500/80 px-4 py-2 text-sm font-semibold transition hover:bg-emerald-500 active:scale-95">+ Новая</button>
+          </div>
+          <div id="inputArea" class="hidden mb-4 rounded-2xl border border-white/15 bg-white/10 p-3">
+            <div id="editHint" class="mb-2 text-xs font-medium text-white/60"></div>
+            <input id="taskInput" type="text" maxlength="80" placeholder="Что нужно сделать?" class="w-full rounded-xl border border-white/20 bg-black/20 px-3 py-3 text-sm text-white outline-none placeholder:text-white/40 focus:border-white/50">
+            <div class="mt-2 grid grid-cols-2 gap-2">
+              <button id="saveTask" type="button" class="min-h-11 rounded-xl bg-emerald-500/80 px-3 py-2 text-sm font-semibold transition hover:bg-emerald-500">Сохранить</button>
+              <button id="cancelTask" type="button" class="min-h-11 rounded-xl bg-white/10 px-3 py-2 text-sm font-medium transition hover:bg-white/20">Отмена</button>
+            </div>
+          </div>
+          <ul id="taskList" class="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain pr-1">
+            <li id="emptyState" class="flex h-full min-h-40 flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 text-center text-white/45">
+              <svg class="mb-2 h-9 w-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+              <span>На этот день задач пока нет</span>
+            </li>
+          </ul>
+          <div class="mt-3 border-t border-white/10 pt-3"><span id="taskCounter" class="text-xs text-white/50"></span><span class="float-right text-xs text-white/35">Нажмите на задачу для действий</span></div>
+        </section>
+
+        <aside class="rounded-[2rem] border border-blue-300/25 bg-blue-900/35 p-5 shadow-xl backdrop-blur-md">
+          <div class="mb-4 flex items-center justify-between gap-2">
+            <div><p class="text-xs uppercase tracking-wider text-blue-100/60">DayLine AI</p><h2 class="mt-1 text-xl font-semibold">Помощник по задачам</h2></div>
             <span class="rounded-full border border-blue-200/20 bg-blue-300/10 px-2 py-1 text-[10px] text-blue-100/70">BETA</span>
           </div>
-          <div id="aiChatMessages" class="mb-3 max-h-72 space-y-2 overflow-y-auto rounded-2xl border border-white/10 bg-black/15 p-3" aria-live="polite">
+          <div id="aiChatMessages" class="mb-3 h-80 space-y-2 overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-black/15 p-3 sm:h-96" aria-live="polite">
             <div class="max-w-[92%] rounded-2xl rounded-tl-md bg-white/10 px-3 py-2 text-sm text-blue-50/90">Расскажите, что хотите сделать. Я могу уточнить детали и предложить задачи.</div>
           </div>
-          <textarea id="aiGoal" maxlength="500" rows="2" placeholder="Напишите цель или попросите идеи…" class="w-full resize-none rounded-2xl border border-white/15 bg-black/20 px-3 py-3 text-sm outline-none placeholder:text-white/35 focus:border-blue-200/40"></textarea>
-          <button id="generatePlanBtn" type="button" class="mt-2 min-h-11 w-full rounded-2xl bg-blue-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-blue-300">Отправить</button>
-        </div>
-      </aside>
+          <div class="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-end">
+            <textarea id="aiGoal" maxlength="500" rows="2" placeholder="Напишите цель или попросите идеи…" class="w-full resize-none rounded-2xl border border-white/15 bg-black/20 px-3 py-3 text-sm outline-none placeholder:text-white/35 focus:border-blue-200/40"></textarea>
+            <button id="generatePlanBtn" type="button" class="min-h-12 rounded-2xl bg-blue-400 px-6 py-2 text-sm font-semibold text-slate-950 transition hover:bg-blue-300">Отправить</button>
+          </div>
+        </aside>
+      </div>
     </main>
   </div>
   <script src="/scripts/calendar.js" defer></script>
