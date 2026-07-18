@@ -1,444 +1,161 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Учёт КБЖУ</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Питание - DayLine</title>
   <link rel="stylesheet" href="assets/main.css">
 </head>
-<body class="min-h-screen bg-[url('/image/morning_main.png')] bg-cover bg-center bg-no-repeat text-white">
-
-  <div class="min-h-screen bg-black/10 backdrop-brightness-95">
-    <header class="px-4 pt-5 sm:px-6">
-      <div class="mx-auto flex max-w-6xl flex-col gap-3 rounded-[1.5rem] border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between sm:rounded-full">
-        <div class="pl-3">
-          <p class="text-lg font-semibold sm:text-2xl">Учёт КБЖУ</p>
-          <p class="text-xs text-white/80 sm:text-sm">Дневник питания по дням</p>
-        </div>
-
-        <nav class="grid w-full grid-cols-2 items-center gap-2 sm:flex sm:w-auto sm:gap-3">
-          <a href="/main" class="rounded-full bg-white/10 px-4 py-2 text-sm transition hover:bg-white/20">
-            Главная
-          </a>
-          <a href="/logout" class="rounded-full bg-white/10 px-4 py-2 text-sm transition hover:bg-white/20">
-            Выйти
-          </a>
+<body class="min-h-screen bg-[url('/image/morning_main.png')] bg-cover bg-center bg-fixed text-white">
+  <div class="min-h-screen bg-slate-950/25 backdrop-blur-[1px]">
+    <header class="px-4 pt-4 sm:px-6 sm:pt-5">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-2xl border border-white/15 bg-slate-950/35 px-4 py-3 shadow-lg backdrop-blur-xl sm:rounded-full sm:px-6">
+        <a href="/main" class="min-w-0">
+          <p class="truncate text-lg font-semibold">DayLine</p>
+          <p class="hidden text-xs text-white/60 sm:block">Питание</p>
+        </a>
+        <nav class="flex items-center gap-2 text-sm">
+          <a href="/main" class="rounded-full px-4 py-2 text-white/80 transition hover:bg-white/10">Главная</a>
+          <a href="/logout" class="rounded-full border border-white/15 px-4 py-2 transition hover:bg-white/10">Выйти</a>
         </nav>
       </div>
     </header>
 
-    <main class="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-  <section class="mb-6">
-    <div class="rounded-[2rem] border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-md sm:p-8">
-      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <p class="mb-2 text-sm font-medium text-white/70">Питание и калории</p>
-          <h1 class="text-3xl font-semibold text-white sm:text-4xl">
-            Дневник питания
-          </h1>
-          <p class="mt-2 max-w-2xl text-sm text-white/75 sm:text-base">
-            Добавляй продукты в рацион, отслеживай БЖУ и сохраняй свои рецепты для быстрого повторного использования.
-          </p>
-        </div>
-
-        <div class="w-full lg:w-72">
-          <label for="foodDate" class="mb-2 block text-sm text-white/80">
-            Выбери дату
-          </label>
-          <input
-            id="foodDate"
-            type="date"
-            class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white outline-none backdrop-blur-md focus:border-white/40"
-          />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="mb-6 grid grid-cols-2 gap-4 xl:grid-cols-4">
-    <div class="rounded-[2rem] border border-white/20 bg-white/10 p-5 shadow-xl backdrop-blur-md">
-      <p class="text-sm text-white/70">Калории</p>
-      <p id="totalCalories" class="mt-2 text-2xl font-bold text-white sm:text-3xl">0</p>
-    </div>
-
-    <div class="rounded-[2rem] border border-white/20 bg-white/10 p-5 shadow-xl backdrop-blur-md">
-      <p class="text-sm text-white/70">Белки</p>
-      <p id="totalProteins" class="mt-2 text-2xl font-bold text-white sm:text-3xl">0</p>
-    </div>
-
-    <div class="rounded-[2rem] border border-white/20 bg-white/10 p-5 shadow-xl backdrop-blur-md">
-      <p class="text-sm text-white/70">Углеводы</p>
-      <p id="totalCarbs" class="mt-2 text-2xl font-bold text-white sm:text-3xl">0</p>
-    </div>
-
-    <div class="rounded-[2rem] border border-white/20 bg-white/10 p-5 shadow-xl backdrop-blur-md">
-      <p class="text-sm text-white/70">Жиры</p>
-      <p id="totalFats" class="mt-2 text-2xl font-bold text-white sm:text-3xl">0</p>
-    </div>
-  </section>
-
-  <section class="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
-    <article class="rounded-[2rem] border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-md">
-      <div class="mb-6">
-        <h2 class="text-2xl font-semibold text-white">Добавить продукт</h2>
-        <p class="mt-1 text-white/75">
-          Выбери продукт из базы и укажи нужное количество в граммах.
-        </p>
-      </div>
-
-      <div class="space-y-5">
-        <div class="relative">
-          <label for="productSearch" class="mb-2 block text-sm text-white/80">
-            Поиск продукта
-          </label>
-          <input
-            id="productSearch"
-            type="text"
-            autocomplete="off"
-            placeholder="Начни вводить название продукта"
-            class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/60 outline-none backdrop-blur-md focus:border-white/40"
-          />
-          <div
-            id="searchResults"
-            class="absolute left-0 right-0 top-full z-20 mt-2 hidden overflow-hidden rounded-2xl border border-white/20 bg-slate-900/80 shadow-xl backdrop-blur-xl"
-          ></div>
-        </div>
-
-        <div>
-          <label for="gramsInput" class="mb-2 block text-sm text-white/80">
-            Граммовка
-          </label>
-          <input
-            id="gramsInput"
-            type="number"
-            min="1"
-            placeholder="Например, 150"
-            class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/60 outline-none backdrop-blur-md focus:border-white/40"
-          />
-        </div>
-
-        <div class="rounded-[2rem] border border-white/20 bg-white/10 p-5 backdrop-blur-md">
-          <div class="mb-4 flex items-start justify-between gap-4">
-            <div>
-              <p class="text-sm text-white/70">Выбранный продукт</p>
-              <h3 id="selectedProductName" class="mt-1 text-lg font-semibold text-white">
-                Пока не выбран
-              </h3>
-            </div>
-            <span class="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white/80">
-              на 100 г
-            </span>
+    <main class="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-7">
+      <section class="mb-5 rounded-3xl border border-white/15 bg-slate-950/35 p-5 shadow-xl backdrop-blur-xl sm:p-6">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p class="text-sm font-medium text-emerald-200">Дневник питания</p>
+            <h1 class="mt-1 text-2xl font-semibold sm:text-3xl">Рацион за день</h1>
+            <p class="mt-1 text-sm text-white/60">Добавляй продукты и следи за итогом без лишних экранов.</p>
           </div>
-
-          <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <div class="rounded-2xl bg-white/10 p-3">
-              <p class="mb-1 text-xs text-white/65">Ккал</p>
-              <p id="selectedCalories" class="text-lg font-bold text-white">0</p>
-            </div>
-
-            <div class="rounded-2xl bg-white/10 p-3">
-              <p class="mb-1 text-xs text-white/65">Белки</p>
-              <p id="selectedProteins" class="text-lg font-bold text-white">0</p>
-            </div>
-
-            <div class="rounded-2xl bg-white/10 p-3">
-              <p class="mb-1 text-xs text-white/65">Углеводы</p>
-              <p id="selectedCarbs" class="text-lg font-bold text-white">0</p>
-            </div>
-
-            <div class="rounded-2xl bg-white/10 p-3">
-              <p class="mb-1 text-xs text-white/65">Жиры</p>
-              <p id="selectedFats" class="text-lg font-bold text-white">0</p>
-            </div>
+          <div class="w-full md:w-56">
+            <label for="foodDate" class="mb-1.5 block text-xs font-medium uppercase tracking-wide text-white/55">Дата</label>
+            <input id="foodDate" type="date" class="w-full rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-white outline-none focus:border-emerald-300/60">
           </div>
         </div>
 
-        <button
-          id="addFoodBtn"
-          type="button"
-          class="w-full rounded-2xl bg-blue-600/80 px-5 py-3.5 font-medium text-white transition hover:bg-blue-600"
-        >
-          Добавить продукт
-        </button>
-      </div>
-    </article>
-
-    <article class="rounded-[2rem] border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-md">
-      <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h2 class="text-2xl font-semibold text-white">Мои рецепты</h2>
-          <p class="mt-1 text-white/75">
-            Сохрани рецепт один раз и добавляй его в рацион потом в пару кликов.
-          </p>
+        <div class="mt-5 grid grid-cols-4 divide-x divide-white/10 rounded-2xl bg-white/8 px-2 py-3">
+          <div class="px-2 text-center"><p id="totalCalories" class="text-xl font-semibold sm:text-2xl">0</p><p class="text-[11px] text-white/55 sm:text-xs">ккал</p></div>
+          <div class="px-2 text-center"><p id="totalProteins" class="text-xl font-semibold sm:text-2xl">0</p><p class="text-[11px] text-white/55 sm:text-xs">белки</p></div>
+          <div class="px-2 text-center"><p id="totalFats" class="text-xl font-semibold sm:text-2xl">0</p><p class="text-[11px] text-white/55 sm:text-xs">жиры</p></div>
+          <div class="px-2 text-center"><p id="totalCarbs" class="text-xl font-semibold sm:text-2xl">0</p><p class="text-[11px] text-white/55 sm:text-xs">углеводы</p></div>
         </div>
+      </section>
 
-        <button
-          id="openRecipeModalBtn"
-          type="button"
-          class="rounded-2xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-white/20"
-        >
-          Создать
-        </button>
-      </div>
-
-      <div class="space-y-5">
-        <div class="relative">
-          <label for="recipeSearch" class="mb-2 block text-sm text-white/80">
-            Поиск рецепта
-          </label>
-          <input
-            id="recipeSearch"
-            type="text"
-            autocomplete="off"
-            placeholder="Начни вводить название рецепта"
-            class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/60 outline-none backdrop-blur-md focus:border-white/40"
-          />
-          <div
-            id="recipeResults"
-            class="absolute left-0 right-0 top-full z-20 mt-2 hidden overflow-hidden rounded-2xl border border-white/20 bg-slate-900/80 shadow-xl backdrop-blur-xl"
-          ></div>
-        </div>
-
-        <div class="rounded-[2rem] border border-white/20 bg-white/10 p-5 backdrop-blur-md">
-          <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <p class="text-sm text-white/70">Выбранный рецепт</p>
-              <h3 id="selectedRecipeName" class="mt-1 text-lg font-semibold text-white">
-                Пока не выбран
-              </h3>
-            </div>
-            <span class="rounded-full bg-amber-400/20 px-3 py-1 text-xs font-medium text-amber-100">
-              рецепт
-            </span>
-          </div>
-
-          <div class="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <div class="rounded-2xl bg-white/10 p-3">
-              <p class="mb-1 text-xs text-white/65">Ккал</p>
-              <p id="selectedRecipeCalories" class="text-lg font-bold text-white">0</p>
+      <div class="grid items-start gap-5 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.35fr)]">
+        <div class="space-y-4">
+          <section class="rounded-3xl border border-white/15 bg-slate-950/35 p-5 shadow-xl backdrop-blur-xl sm:p-6">
+            <div class="mb-5">
+              <p class="text-xs font-medium uppercase tracking-wider text-emerald-200/80">Новая запись</p>
+              <h2 class="mt-1 text-xl font-semibold">Добавить продукт</h2>
             </div>
 
-            <div class="rounded-2xl bg-white/10 p-3">
-              <p class="mb-1 text-xs text-white/65">Белки</p>
-              <p id="selectedRecipeProteins" class="text-lg font-bold text-white">0</p>
-            </div>
-
-            <div class="rounded-2xl bg-white/10 p-3">
-              <p class="mb-1 text-xs text-white/65">Углеводы</p>
-              <p id="selectedRecipeCarbs" class="text-lg font-bold text-white">0</p>
-            </div>
-
-            <div class="rounded-2xl bg-white/10 p-3">
-              <p class="mb-1 text-xs text-white/65">Жиры</p>
-              <p id="selectedRecipeFats" class="text-lg font-bold text-white">0</p>
-            </div>
-          </div>
-
-          <div class="rounded-2xl bg-black/10 p-4 max-h-[200px] flex flex-col"> <!--tyyt-->
-            <div class="mb-3 flex items-center justify-between gap-3">
-              <p class="text-sm font-medium text-white/80">Состав рецепта</p>
-              <div class="flex flex-wrap gap-2">
-                <button
-                  id="editRecipeBtn"
-                  type="button"
-                  class="rounded-xl border border-white/20 px-3 py-1.5 text-xs font-medium text-white/80 transition hover:bg-white/10"
-                >
-                  Редактировать
-                </button>
-                <button
-                  id="deleteRecipeBtn"
-                  type="button"
-                  class="rounded-xl border border-red-200/20 bg-red-400/10 px-3 py-1.5 text-xs font-medium text-red-100 transition hover:bg-red-400/20"
-                >
-                  Удалить
-                </button>
+            <div class="space-y-4">
+              <div class="relative">
+                <label for="productSearch" class="mb-1.5 block text-sm text-white/70">1. Найди продукт</label>
+                <input id="productSearch" type="text" autocomplete="off" placeholder="Например, яблоко" class="w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-white placeholder-white/35 outline-none focus:border-emerald-300/60">
+                <div id="searchResults" class="absolute left-0 right-0 top-full z-20 mt-2 hidden max-h-64 overflow-y-auto rounded-xl border border-white/15 bg-slate-900/95 shadow-2xl backdrop-blur-xl"></div>
               </div>
-            </div>
 
-            <div id="selectedRecipeIngredients" class="flex-1 min-h-0 overflow-y-auto pr-2 space-y-2 text-sm text-white/65">
-              Здесь будет отображаться полный состав выбранного рецепта.
-            </div>
-          </div>
-        </div>
-
-        <div class="rounded-[2rem] border border-dashed border-white/20 bg-white/5 p-5 h-max-[230px] flex flex-col"> <!--tyt-->
-          <p class="mb-3 text-sm font-medium text-white/80">Быстрый список рецептов</p>
-          <div id="recipeQuickList" class="max-h-[180px] overflow-y-auto pr-2 space-y-3">
-            <div class="rounded-2xl bg-white/10 px-4 py-3 text-sm text-white/60">
-              Здесь выводятся созданные вами рецепты.
-            </div>
-          </div>
-        </div>
-
-        <button
-          id="addRecipeBtn"
-          type="button"
-          class="w-full rounded-2xl bg-emerald-500 px-5 py-3.5 font-medium text-white transition hover:bg-emerald-400"
-        >
-          Добавить рецепт в рацион
-        </button>
-      </div>
-    </article>
-  </section>
-
-  <section class="rounded-[2rem] border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-md h-max-[540px] flex flex-col">
-    <div class="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-      <div>
-        <p class="text-sm text-white/70">История питания</p>
-        <h2 id="currentNutritionDateLabel" class="mt-1 text-2xl font-semibold text-white">
-          —
-        </h2>
-      </div>
-
-      <div class="rounded-2xl bg-white/10 px-4 py-3">
-        <p class="text-sm text-white/70">Записей за день</p>
-        <p id="entriesCounter" class="text-xl font-bold text-white">0</p>
-      </div>
-    </div>
-
-    <div id="emptyNutritionState" class="rounded-[2rem] border border-dashed border-white/20 bg-white/5 p-10 text-center text-white/65"> <!--tyt-->
-      За выбранную дату пока нет записей. Добавь продукт или рецепт.
-    </div>
-
-    <div id="foodList" class="space-y-4 flex-1 overflow-y-auto max-h-[400px]"></div>
-  </section>
-</main>
-  </div>
-      <div
-    id="recipeModal"
-    class="hidden fixed inset-0 z-50 bg-slate-900/50 px-4 py-8 overflow-y-auto"
-  >
-    <div class="mx-auto max-w-4xl rounded-3xl border border-slate-200 bg-white p-5 shadow-xl sm:p-6 md:p-8">
-      <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h2 class="text-2xl font-semibold text-slate-900">Создать рецепт</h2>
-          <p class="text-slate-600 mt-1">
-            Собери рецепт из продуктов базы, сохрани его и используй повторно.
-          </p>
-        </div>
-
-        <button
-          id="closeRecipeModalBtn"
-          type="button"
-          class="rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-        >
-          Закрыть
-        </button>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="space-y-5">
-          <div>
-            <label for="recipeNameInput" class="block text-sm font-medium text-slate-700 mb-2">
-              Название рецепта
-            </label>
-            <input
-              id="recipeNameInput"
-              type="text"
-              placeholder="Например, Курица с рисом"
-              class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 text-slate-900"
-            />
-          </div>
-
-          <div class="relative">
-            <label for="recipeProductSearch" class="block text-sm font-medium text-slate-700 mb-2">
-              Ингредиент
-            </label>
-            <input
-              id="recipeProductSearch"
-              type="text"
-              autocomplete="off"
-              placeholder="Найди продукт"
-              class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 text-slate-900"
-            />
-            <div
-              id="recipeProductResults"
-              class="hidden absolute left-0 right-0 top-full z-20 mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg"
-            ></div>
-          </div>
-
-          <div>
-            <label for="recipeGramsInput" class="block text-sm font-medium text-slate-700 mb-2">
-              Граммовка ингредиента
-            </label>
-            <input
-              id="recipeGramsInput"
-              type="number"
-              min="1"
-              placeholder="Например, 200"
-              class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 text-slate-900"
-            />
-          </div>
-
-          <button
-            id="addIngredientBtn"
-            type="button"
-            class="w-full rounded-2xl bg-emerald-600 px-5 py-3.5 text-white font-medium transition hover:bg-emerald-700 active:bg-emerald-800"
-          >
-            Добавить ингредиент
-          </button>
-        </div>
-
-        <div class="space-y-5">
-          <div class="rounded-3xl bg-slate-50 border border-slate-200 p-5">
-            <div class="flex items-start justify-between gap-4 mb-4">
               <div>
-                <p class="text-sm text-slate-500">Состав рецепта</p>
-                <h3 class="text-lg font-semibold text-slate-900 mt-1">Ингредиенты</h3>
+                <label for="gramsInput" class="mb-1.5 block text-sm text-white/70">2. Укажи вес</label>
+                <div class="relative">
+                  <input id="gramsInput" type="number" min="1" inputmode="decimal" placeholder="150" class="w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 pr-12 text-white placeholder-white/35 outline-none focus:border-emerald-300/60">
+                  <span class="pointer-events-none absolute right-4 top-3 text-white/45">г</span>
+                </div>
               </div>
-              <span
-                id="recipeIngredientsCount"
-                class="rounded-full bg-white border border-slate-200 px-3 py-1 text-xs font-medium text-slate-700"
-              >
-                0 ингредиентов
-              </span>
-            </div>
 
-            <div id="recipeIngredientsList" class="max-h-[320px] overflow-y-auto pr-2 space-y-3">
-              <div class="rounded-2xl bg-white border border-dashed border-slate-300 p-4 text-sm text-slate-500">
-                Пока нет ингредиентов. Добавь первый продукт в рецепт.
+              <div class="rounded-2xl border border-white/10 bg-white/7 p-4">
+                <p class="text-xs text-white/45">Выбрано</p>
+                <p id="selectedProductName" class="mt-0.5 truncate font-medium">Пока ничего</p>
+                <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/60">
+                  <span><b id="selectedCalories" class="text-white">0</b> ккал</span>
+                  <span>Б <b id="selectedProteins" class="text-white">0</b></span>
+                  <span>Ж <b id="selectedFats" class="text-white">0</b></span>
+                  <span>У <b id="selectedCarbs" class="text-white">0</b></span>
+                  <span class="text-white/35">на 100 г</span>
+                </div>
               </div>
+
+              <button id="addFoodBtn" type="button" class="w-full rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-emerald-400 active:scale-[0.99]">Добавить в дневник</button>
             </div>
+          </section>
+
+          <details class="group rounded-3xl border border-white/15 bg-slate-950/35 shadow-xl backdrop-blur-xl">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 p-5 sm:p-6">
+              <div><p class="text-xs font-medium uppercase tracking-wider text-amber-200/80">Необязательно</p><h2 class="mt-1 text-lg font-semibold">Мои блюда</h2><p class="mt-1 text-sm text-white/50">Рецепты, которые часто повторяются</p></div>
+              <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/10 text-xl transition group-open:rotate-45">+</span>
+            </summary>
+            <div class="space-y-4 border-t border-white/10 px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
+              <div class="flex gap-2">
+                <div class="relative min-w-0 flex-1">
+                  <input id="recipeSearch" type="text" autocomplete="off" placeholder="Найти своё блюдо" class="w-full rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-white placeholder-white/35 outline-none focus:border-amber-200/60">
+                  <div id="recipeResults" class="absolute left-0 right-0 top-full z-20 mt-2 hidden max-h-56 overflow-y-auto rounded-xl border border-white/15 bg-slate-900/95 shadow-2xl"></div>
+                </div>
+                <button id="openRecipeModalBtn" type="button" class="shrink-0 rounded-xl border border-white/15 px-4 py-2.5 text-sm hover:bg-white/10">Создать</button>
+              </div>
+
+              <div id="recipeQuickList" class="max-h-40 space-y-2 overflow-y-auto pr-1"><p class="rounded-xl bg-white/5 p-3 text-sm text-white/45">Сохранённых блюд пока нет.</p></div>
+
+              <div class="rounded-2xl bg-white/7 p-4">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="min-w-0"><p class="text-xs text-white/45">Выбранное блюдо</p><p id="selectedRecipeName" class="mt-0.5 truncate font-medium">Пока ничего</p></div>
+                  <div class="flex gap-1">
+                    <button id="editRecipeBtn" type="button" class="rounded-lg px-2.5 py-1.5 text-xs text-white/60 hover:bg-white/10">Изменить</button>
+                    <button id="deleteRecipeBtn" type="button" class="rounded-lg px-2.5 py-1.5 text-xs text-red-200/80 hover:bg-red-400/10">Удалить</button>
+                  </div>
+                </div>
+                <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/60">
+                  <span><b id="selectedRecipeCalories" class="text-white">0</b> ккал</span><span>Б <b id="selectedRecipeProteins" class="text-white">0</b></span><span>Ж <b id="selectedRecipeFats" class="text-white">0</b></span><span>У <b id="selectedRecipeCarbs" class="text-white">0</b></span>
+                </div>
+                <div id="selectedRecipeIngredients" class="mt-3 max-h-28 space-y-1 overflow-y-auto text-xs text-white/45">Здесь появится состав блюда.</div>
+              </div>
+              <button id="addRecipeBtn" type="button" class="w-full rounded-xl bg-amber-300 px-4 py-2.5 font-semibold text-slate-950 transition hover:bg-amber-200">Добавить блюдо в дневник</button>
+            </div>
+          </details>
+        </div>
+
+        <section class="flex min-h-[30rem] flex-col rounded-3xl border border-white/15 bg-slate-950/35 p-5 shadow-xl backdrop-blur-xl sm:p-6 lg:max-h-[calc(100vh-8rem)]">
+          <div class="mb-4 flex items-end justify-between gap-3 border-b border-white/10 pb-4">
+            <div><p class="text-xs font-medium uppercase tracking-wider text-white/45">Дневник</p><h2 id="currentNutritionDateLabel" class="mt-1 text-xl font-semibold">-</h2></div>
+            <div class="text-right"><p id="entriesCounter" class="text-xl font-semibold">0</p><p class="text-xs text-white/45">записей</p></div>
           </div>
+          <div id="emptyNutritionState" class="grid flex-1 place-items-center rounded-2xl border border-dashed border-white/15 p-8 text-center text-sm text-white/45">Здесь появится рацион за выбранный день.</div>
+          <div id="foodList" class="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1"></div>
+        </section>
+      </div>
+    </main>
+  </div>
 
-          <div class="rounded-3xl bg-slate-50 border border-slate-200 p-5">
-            <p class="text-sm text-slate-500 mb-3">Итоговые значения рецепта</p>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div class="rounded-2xl bg-white border border-slate-200 p-3">
-                <p class="text-xs text-slate-500 mb-1">Ккал</p>
-                <p id="recipeTotalCalories" class="text-lg font-bold text-slate-900">0</p>
-              </div>
+  <div id="recipeModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-950/75 px-4 py-6 backdrop-blur-sm">
+    <div class="mx-auto max-w-3xl rounded-3xl bg-white p-5 text-slate-900 shadow-2xl sm:p-7">
+      <div class="mb-6 flex items-start justify-between gap-4">
+        <div><p class="text-sm font-medium text-emerald-600">Собственное блюдо</p><h2 class="mt-1 text-2xl font-semibold">Собрать рецепт</h2><p class="mt-1 text-sm text-slate-500">Добавь название и ингредиенты с весом.</p></div>
+        <button id="closeRecipeModalBtn" type="button" class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-100 text-xl hover:bg-slate-200">×</button>
+      </div>
 
-              <div class="rounded-2xl bg-white border border-slate-200 p-3">
-                <p class="text-xs text-slate-500 mb-1">Белки</p>
-                <p id="recipeTotalProteins" class="text-lg font-bold text-slate-900">0</p>
-              </div>
+      <div class="grid gap-5 md:grid-cols-2">
+        <div class="space-y-4">
+          <div><label for="recipeNameInput" class="mb-1.5 block text-sm font-medium">Название блюда</label><input id="recipeNameInput" type="text" placeholder="Например, сырники" class="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"></div>
+          <div class="relative"><label for="recipeProductSearch" class="mb-1.5 block text-sm font-medium">Ингредиент</label><input id="recipeProductSearch" type="text" autocomplete="off" placeholder="Найти продукт" class="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"><div id="recipeProductResults" class="absolute left-0 right-0 top-full z-20 mt-2 hidden max-h-52 overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-xl"></div></div>
+          <div class="flex gap-2"><input id="recipeGramsInput" type="number" min="1" inputmode="decimal" placeholder="Вес, г" class="min-w-0 flex-1 rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-emerald-500"><button id="addIngredientBtn" type="button" class="rounded-xl bg-slate-900 px-4 py-3 text-white hover:bg-slate-800">Добавить</button></div>
+        </div>
 
-              <div class="rounded-2xl bg-white border border-slate-200 p-3">
-                <p class="text-xs text-slate-500 mb-1">Углеводы</p>
-                <p id="recipeTotalCarbs" class="text-lg font-bold text-slate-900">0</p>
-              </div>
-
-              <div class="rounded-2xl bg-white border border-slate-200 p-3">
-                <p class="text-xs text-slate-500 mb-1">Жиры</p>
-                <p id="recipeTotalFats" class="text-lg font-bold text-slate-900">0</p>
-              </div>
-            </div>
-          </div>
-
-          <button
-            id="saveRecipeBtn"
-            type="button"
-            class="w-full rounded-2xl bg-slate-900 px-5 py-3.5 text-white font-medium transition hover:bg-slate-800 active:bg-slate-950"
-          >
-            Сохранить рецепт
-          </button>
+        <div class="rounded-2xl bg-slate-50 p-4">
+          <div class="mb-3 flex items-center justify-between"><p class="font-medium">Состав</p><span id="recipeIngredientsCount" class="rounded-full bg-white px-3 py-1 text-xs text-slate-500">0 ингредиентов</span></div>
+          <div id="recipeIngredientsList" class="max-h-64 space-y-2 overflow-y-auto"><p class="rounded-xl border border-dashed border-slate-200 p-4 text-sm text-slate-400">Добавь первый ингредиент.</p></div>
         </div>
       </div>
+
+      <div class="mt-5 grid grid-cols-4 gap-2 rounded-2xl bg-slate-50 p-4 text-center">
+        <div><p id="recipeTotalCalories" class="font-semibold">0</p><p class="text-xs text-slate-400">ккал</p></div><div><p id="recipeTotalProteins" class="font-semibold">0</p><p class="text-xs text-slate-400">белки</p></div><div><p id="recipeTotalFats" class="font-semibold">0</p><p class="text-xs text-slate-400">жиры</p></div><div><p id="recipeTotalCarbs" class="font-semibold">0</p><p class="text-xs text-slate-400">углеводы</p></div>
+      </div>
+      <button id="saveRecipeBtn" type="button" class="mt-5 w-full rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-slate-950 hover:bg-emerald-400">Сохранить блюдо</button>
     </div>
   </div>
+
   <script src="/scripts/ui.js"></script>
   <script src="/scripts/nutrition.js"></script>
 </body>
 </html>
-

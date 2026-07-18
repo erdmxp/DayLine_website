@@ -8,16 +8,32 @@ const nutritionRoutes = require('./routes/nutritionRoutes');
 const walletRoutes = require('./routes/walletRoutes');
 const dishesRoutes = require('./routes/dishesRoutes');
 const assistantRoutes = require('./routes/assistantRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
 
 const app = express();
+
+// Render завершает HTTPS на прокси. Без этой настройки secure-cookie
+// не будет сохраняться в production.
+app.set('trust proxy', 1);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const useSecureCookie =
+  process.env.SESSION_COOKIE_SECURE === 'true' ||
+  process.env.NODE_ENV === 'production';
+
 app.use(session({
+  name: 'dayline.sid',
   secret: process.env.SESSION_SECRET || 'dayline-local-secret',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: useSecureCookie,
+    sameSite: 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  }
 }));
 
 app.use(express.static(path.join(__dirname, '../dist')));
@@ -29,6 +45,7 @@ app.use('/api/nutrition', nutritionRoutes);
 app.use('/api/dishes', dishesRoutes);
 app.use('/api/assistant', assistantRoutes);
 app.use('/api/wallet', walletRoutes);
+app.use('/api/feedback', feedbackRoutes);
 app.use(authRoutes);
 
 app.get('/health', (req, res) => {

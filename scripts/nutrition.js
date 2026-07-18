@@ -261,40 +261,28 @@ function renderEntries() {
   foodList.innerHTML = entries
     .map(
       (entry) => `
-        <div class="rounded-[2rem] border border-white/20 bg-white/10 p-4 text-white shadow-lg backdrop-blur-md">
-          <div class="mb-3 flex items-start justify-between gap-3">
+        <div class="rounded-2xl border border-white/10 bg-white/7 p-4 text-white transition hover:bg-white/10">
+          <div class="flex items-start justify-between gap-3">
             <div class="min-w-0">
-              <p class="text-lg font-semibold break-words">${entry.food_name}</p>
-              <p class="text-sm text-white/65">${entry.grams} г • ${entry.food_date_formatted || ''}</p>
-              ${entry.description ? `<p class="mt-2 text-sm leading-relaxed text-white/70 break-words">${entry.description}</p>` : ''}
+              <p class="break-words font-semibold">${entry.food_name}</p>
+              <p class="mt-0.5 text-xs text-white/45">${entry.grams} г${entry.description ? ` • ${entry.description}` : ''}</p>
+              <div class="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-white/55">
+                <span><b class="text-white">${entry.calories}</b> ккал</span>
+                <span>Б <b class="text-white">${entry.proteins}</b></span>
+                <span>Ж <b class="text-white">${entry.fats}</b></span>
+                <span>У <b class="text-white">${entry.carbs}</b></span>
+              </div>
             </div>
 
             <button
               type="button"
               data-entry-id="${entry.calories_id}"
-              class="shrink-0 rounded-xl border border-red-200/20 bg-red-400/10 px-3 py-1.5 text-sm text-red-100 transition hover:bg-red-400/20"
+              aria-label="Удалить ${entry.food_name}"
+              title="Удалить"
+              class="grid h-8 w-8 shrink-0 place-items-center rounded-full text-lg text-white/40 transition hover:bg-red-400/15 hover:text-red-100"
             >
-              Удалить
+              ×
             </button>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <div class="rounded-xl bg-white/10 px-3 py-2 text-sm">
-              <span class="text-white/60">Ккал</span>
-              <p class="mt-1 font-semibold">${entry.calories}</p>
-            </div>
-            <div class="rounded-xl bg-white/10 px-3 py-2 text-sm">
-              <span class="text-white/60">Белки</span>
-              <p class="mt-1 font-semibold">${entry.proteins}</p>
-            </div>
-            <div class="rounded-xl bg-white/10 px-3 py-2 text-sm">
-              <span class="text-white/60">Углеводы</span>
-              <p class="mt-1 font-semibold">${entry.carbs}</p>
-            </div>
-            <div class="rounded-xl bg-white/10 px-3 py-2 text-sm">
-              <span class="text-white/60">Жиры</span>
-              <p class="mt-1 font-semibold">${entry.fats}</p>
-            </div>
           </div>
         </div>
       `

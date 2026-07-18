@@ -58,8 +58,8 @@ form.addEventListener('submit', async (e) => {
   if (username.value.trim() === '') {
     showError(username, 'Введите имя');
     hasError = true;
-  } else if (username.value.trim().length < 8) {
-    showErrorNotEmpty(username, userError, 'Символов должно быть не менее 8');
+  } else if (username.value.trim().length < 3) {
+    showErrorNotEmpty(username, userError, 'Символов должно быть не менее 3');
     hasError = true;
   }
 
